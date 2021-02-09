@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dao-class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="dao.xsd">
+
+    <crud dto="Release" table="releases">
+        <create method="create_release"/>
+    </crud>
+
+    <query-dto-list method="find_by_name(p_name)" dto="Release" ref="select * from releases where r_name = ?"/>
+
+</dao-class>

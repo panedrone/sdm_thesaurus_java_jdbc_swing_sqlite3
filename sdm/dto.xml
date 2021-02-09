@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dto-classes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="dto.xsd">
+
+    <dto-class name="DownloadsInfo" ref="downloads"/>
+    <dto-class name="Release" ref="releases"/>
+
+</dto-classes>

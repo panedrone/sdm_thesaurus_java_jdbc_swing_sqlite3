@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dao-class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="dao.xsd">
+
+    <crud dto="DownloadsInfo" table="downloads">
+        <create method="create_download"/>
+        <update method="update_download"/>
+    </crud>
+
+    <query-dto-list method="find(p_id, p_date)" dto="DownloadsInfo"
+                    ref="select * from downloads where r_id=? and d_date=?"/>
+
+    <query-dto-list method="get_latest(int p_id, int start, int count)" dto="DownloadsInfo" ref="get_latest.sql"/>
+
+</dao-class>
