@@ -159,7 +159,7 @@ class MyApp:
         downloads_arr = self.d_dao.find(str(self.release_path.r_id), today)
         if len(downloads_arr) == 0:
             di = DownloadsInfo()
-            di.p_id = self.release_path.r_id
+            di.r_id = self.release_path.r_id
             di.d_date = today
             di.d_downloads = release_downloads_count
             self.d_dao.create_download(di)

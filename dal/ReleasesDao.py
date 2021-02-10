@@ -25,9 +25,9 @@ class ReleasesDao:
         self.ds.insert_row(sql, [p.r_name], _ai_values)
         p.r_id = _ai_values[0][1]
 
-    def find_by_name(self, p_name):
+    def find_by_name(self, r_name):
         """
-        @type p_name: str
+        @type r_name: str
         @rtype: list[Release]
         """
         sql = """select * from releases where r_name = ?"""
@@ -39,5 +39,5 @@ class ReleasesDao:
             _obj.r_name = row["r_name"]  # t(r_name) <- q(r_name)
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [p_name], _map_cb)
+        self.ds.query_all_rows(sql, [r_name], _map_cb)
         return _res
