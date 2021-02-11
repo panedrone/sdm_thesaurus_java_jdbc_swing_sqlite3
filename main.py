@@ -31,6 +31,7 @@ class MyApp:
     CHART_HEIGHT = 320
 
     def __init__(self):
+        # === panedrone: not needed:
         # root.geometry("600x300")
         self.ds = DataStore()
         self.ds.open()
@@ -39,15 +40,17 @@ class MyApp:
         self.root = tk.Tk()
         self.root.resizable(width=False, height=False)
         frame = tk.Frame(self.root)
-        frame.pack()
-        self.label = tk.Label(frame, bd=1, padx=12, pady=12)
-        self.label.grid(column=0, row=0, padx=6)
-        label2 = tk.Label(frame, relief='sunken', bd=1, padx=12)
-        label2.grid(column=1, row=0, padx=6)
-        self.canvas = tk.Canvas(label2, width=self.CHART_WIDTH, height=self.CHART_HEIGHT, bg='white')
-        self.canvas.pack()
+        pad = 8
+        frame.pack(padx=pad, pady=pad)
+        self.label_release_info = tk.Label(frame, bd=1, padx=pad)
+        self.label_release_info.grid(column=0, row=0)
+        canvas_panel = tk.PanedWindow(frame, relief='sunken', bd=1)
+        canvas_panel.grid(column=1, row=0, padx=(pad, 0))
+        # === panedrone: don't use tk.Label as Canvas container because of buggy repaint behavior
+        self.canvas = tk.Canvas(canvas_panel, relief='sunken', width=self.CHART_WIDTH, height=self.CHART_HEIGHT)
+        self.canvas.pack()  # the same as fill=tk.BOTH
         b = tk.Button(frame, text="Update", command=self._show_stat, bd=1)
-        b.grid(column=1, row=1, padx=6, pady=6, sticky="E")
+        b.grid(column=1, row=1, pady=(pad, 0), sticky="E")
         self.release_path = Release()
         self._show_stat()
         # center it last:
@@ -122,7 +125,7 @@ class MyApp:
             max_data_value = 1
         # https://stackoverflow.com/questions/35666573/use-tkinter-to-draw-a-specific-bar-chart
         y_stretch = (self.CHART_HEIGHT - 60) / max_data_value
-        y_gap = 30
+        y_gap = 24
         x_stretch = 14
         x_width = 20
         x_gap = 12
@@ -135,11 +138,11 @@ class MyApp:
             y1 = self.CHART_HEIGHT - y_gap
             hex_color = "#%02x%02x%02x" % (109, 170, 44)
             self.canvas.create_rectangle(x0, y0, x1, y1, fill=hex_color)
-            text_id = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
+            text_1 = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
             x_rect_offset = ((x1 - x0) / 2)
-            self._center_align(text_id, x_rect_offset)
-            text_id = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(day))
-            self._center_align(text_id, x_rect_offset)
+            self._center_align(text_1, x_rect_offset)
+            text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(day))
+            self._center_align(text_2, x_rect_offset)
 
     def _center_align(self, text_id, x_rect_offset):
         text_box = self.canvas.bbox(text_id)
@@ -150,7 +153,7 @@ class MyApp:
         self.canvas.move(text_id, x_rect_offset - x_text_offset, -16)
 
     def _update_ui(self, text):
-        self.label.config(text=text)
+        self.label_release_info.config(text=text)
         self._build_chart()
 
     def _update_db(self, release_downloads_count):
