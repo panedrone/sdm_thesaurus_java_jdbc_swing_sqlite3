@@ -2,6 +2,8 @@ import datetime
 
 import os
 import sys
+from copy import deepcopy
+
 import requests
 import tkinter as tk
 
@@ -80,44 +82,41 @@ class MyApp:
             self.release_path = found[0]
         return user, repo, tag_name
 
+    REPORT_RANGE_IN_DAYS = 14
+
+    def _prepare_chart_data(self):
+        # read an extra one
+        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE_IN_DAYS + 1)
+        res = sorted(res, key=lambda d: d.d_downloads)
+        tmp = deepcopy(res)
+        downloads_max = -1
+        for i in range(1, len(res)):
+            curr = res[i]
+            prev = tmp[i - 1]
+            diff = curr.d_downloads - prev.d_downloads
+            curr.d_downloads = diff
+            if diff > downloads_max:
+                downloads_max = diff
+        return res, downloads_max
+
     def _get_chart_data(self):
-        days_back = 14 + 1
-        di_arr = self.d_dao.get_latest(self.release_path.r_id, 0, days_back)
-        di_dict = {}
-        for di in di_arr:
-            di_dict[di.d_date] = di
+        prepared, downloads_max = self._prepare_chart_data()
+        prepared_dict = {}
+        for di in prepared:
+            prepared_dict[di.d_date] = di
         today = datetime.date.today()
         downloads_by_dates = []
-        downloads_by_date_max = -1
-        for days_to_subtract in range(days_back - 1, -1, -1):
-            dt = today - datetime.timedelta(days=days_to_subtract)
+        for days_to_add in range(self.REPORT_RANGE_IN_DAYS):
+            dt = today - datetime.timedelta(days=days_to_add)
             dt = str(dt)
-            if dt in di_dict:
-                downloads_by_date = di_dict[dt].d_downloads
-                if downloads_by_date > downloads_by_date_max:
-                    downloads_by_date_max = downloads_by_date
+            if dt in prepared_dict:
+                downloads_by_date = prepared_dict[dt].d_downloads
             else:
-                downloads_by_date = -1
-            downloads_by_dates.append((dt, downloads_by_date))
-        # print(downloads_by_dates)
-        latest_max = downloads_by_date_max
-        for i in range(days_back - 1, -1, -1):
-            dt, downloads_by_date = downloads_by_dates[i]
+                downloads_by_date = 0
             dt = dt.split("-")[2]
-            if downloads_by_date != -1:
-                latest_max = downloads_by_date
-            downloads_by_dates[i] = dt, latest_max
-        # print(downloads_by_dates)
-        downloads_by_date_max = -1
-        for i in range(days_back - 1, 0, -1):
-            dt, downloads_curr = downloads_by_dates[i]
-            _, downloads_prev = downloads_by_dates[i - 1]
-            downloads_by_date = downloads_curr - downloads_prev
-            downloads_by_dates[i] = dt, downloads_by_date
-            if downloads_by_date > downloads_by_date_max:
-                downloads_by_date_max = downloads_by_date
-        downloads_by_dates = downloads_by_dates[1:]
-        return downloads_by_dates, downloads_by_date_max
+            downloads_by_dates.append((dt, downloads_by_date))
+        downloads_by_dates = sorted(downloads_by_dates, reverse=False)
+        return downloads_by_dates, downloads_max
 
     def _build_chart(self):
         data, max_data_value = self._get_chart_data()

@@ -30,13 +30,14 @@ class DownloadsDao:
         sql = """update downloads set d_downloads=? where r_id=? and d_date=?"""
         return self.ds.exec_dml(sql, [p.d_downloads, p.r_id, p.d_date])
 
-    def find(self, p_id, p_date):
+    def find(self, r_id, p_date):
         """
-        @type p_id: str
+        @type r_id: str
         @type p_date: str
         @rtype: list[DownloadsInfo]
         """
-        sql = """select * from downloads where r_id=? and d_date=?"""
+        sql = """select * from downloads 
+                where r_id=? and d_date=?"""
         _res = []
 
         def _map_cb(row):
@@ -46,19 +47,19 @@ class DownloadsDao:
             _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- q(d_downloads)
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [p_id, p_date], _map_cb)
+        self.ds.query_all_rows(sql, [r_id, p_date], _map_cb)
         return _res
 
-    def get_latest(self, p_id, start, count):
+    def get_latest_ordered_by_date_desc(self, r_id, start, count):
         """
-        @type p_id: int
+        @type r_id: int
         @type start: int
         @type count: int
         @rtype: list[DownloadsInfo]
         """
         sql = """select * from downloads 
                 where r_id = ? 
-                order by d_date DESC 
+                order by d_date desc 
                 limit ?, ?"""
         _res = []
 
@@ -69,5 +70,5 @@ class DownloadsDao:
             _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- q(d_downloads)
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [p_id, start, count], _map_cb)
+        self.ds.query_all_rows(sql, [r_id, start, count], _map_cb)
         return _res
