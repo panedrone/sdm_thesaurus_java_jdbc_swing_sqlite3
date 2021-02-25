@@ -71,11 +71,11 @@ class MyApp:
         user = values.get("USER")
         repo = values.get("PERO")
         tag_name = values.get("TAG")
-        p_name = f"{user}/{repo}/{tag_name}"
-        found = self.p_dao.find_by_name(p_name)
+        r_name = f"{user}/{repo}/{tag_name}"
+        found = self.p_dao.find_by_name(r_name)
         if len(found) == 0:
             self.release_path = Release()
-            self.release_path.p_name = p_name
+            self.release_path.r_name = r_name
             self.p_dao.create_release(self.release_path)
             self.ds.commit()
         else:
@@ -87,6 +87,10 @@ class MyApp:
     def _prepare_chart_data(self):
         # read an extra one
         res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE_IN_DAYS + 1)
+        if len(res) == 0:
+            return res, 0
+        if len(res) == 1:
+            return res, res[0].d_downloads
         res = sorted(res, key=lambda d: d.d_downloads)
         tmp = deepcopy(res)
         downloads_max = -1
