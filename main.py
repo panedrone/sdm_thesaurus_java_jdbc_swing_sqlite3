@@ -218,7 +218,7 @@ class MyApp:
                                f"Published at {published_at}\n " \
                                f"{days} days ago\n" \
                                f"Downloads: {release_downloads_count}\n" \
-                               f"{round(release_downloads_count/days, 0)} times a day\n" \
+                               f"{round(release_downloads_count/days)} times a day\n" \
                                f"{release_files_info}"
             total_downloads += release_downloads_count
         return f'{release_info}\n\nTotal Downloads: {total_downloads}'
