@@ -1,5 +1,5 @@
 # github-stat-python-tk
-An ui app to collect/display statistics from GitHub repo API.
+An application to collect/display statistics from GitHub repo API.
 
 https://docs.github.com/en/rest/reference/repos
 
