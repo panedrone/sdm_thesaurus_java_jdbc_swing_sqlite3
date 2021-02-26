@@ -8,6 +8,8 @@ import requests
 import tkinter as tk
 
 from tkinter import messagebox
+
+from dateutil import parser
 from dotenv import dotenv_values
 
 from dal.DataStore import DataStore
@@ -209,10 +211,15 @@ class MyApp:
                     release_files_info += f'\n{file_name}: {file_download_count}'
             if tag_name == tag:
                 self._update_db(release_downloads_count)
-                release_info = f"Release {release_name}\n\n" \
-                               f"Published at {published_at}\n" \
-                               f"{release_files_info}\n\n" \
-                               f"Downloads: {release_downloads_count}"
+                published = parser.parse(published_at).date()
+                today = datetime.date.today()
+                days = (today - published).days
+                release_info = f"Release {release_name}\n" \
+                               f"Published at {published_at}\n " \
+                               f"{days} days ago\n" \
+                               f"Downloads: {release_downloads_count}\n" \
+                               f"{round(release_downloads_count/days, 0)} times a day\n" \
+                               f"{release_files_info}"
             total_downloads += release_downloads_count
         return f'{release_info}\n\nTotal Downloads: {total_downloads}'
 
