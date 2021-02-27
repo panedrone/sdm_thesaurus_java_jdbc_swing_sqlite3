@@ -34,6 +34,8 @@ class MyApp:
     CHART_WIDTH = 480
     CHART_HEIGHT = 320
 
+    REPORT_RANGE = 14
+
     def __init__(self):
         # === panedrone: not needed:
         # root.geometry("600x300")
@@ -53,17 +55,17 @@ class MyApp:
         # === panedrone: don't use tk.Label as Canvas container because of buggy repaint behavior
         self.canvas = tk.Canvas(canvas_panel, relief='sunken', width=self.CHART_WIDTH, height=self.CHART_HEIGHT)
         self.canvas.pack()  # the same as fill=tk.BOTH
-        b = tk.Button(frame, text="Update", command=self._show_stat, bd=1)
+        b = tk.Button(frame, text="Update", command=self.show_stat, bd=1)
         b.grid(column=1, row=1, pady=(pad, 0), sticky="E")
         self.release_path = Release()
-        self._show_stat()
+        self.show_stat()
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
 
     def run(self):
         self.root.mainloop()
 
-    def _load_settings(self):
+    def load_settings(self):
         if len(sys.argv) > 1:
             env = sys.argv[1]
         else:
@@ -84,11 +86,9 @@ class MyApp:
             self.release_path = found[0]
         return user, repo, tag_name
 
-    REPORT_RANGE_IN_DAYS = 14
-
-    def _prepare_chart_data(self):
+    def prepare_chart_data(self):
         # read an extra one
-        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE_IN_DAYS + 1)
+        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE + 1)
         if len(res) == 0:
             return res, 0
         if len(res) == 1:
@@ -105,14 +105,14 @@ class MyApp:
                 downloads_max = diff
         return res, downloads_max
 
-    def _get_chart_data(self):
-        prepared, downloads_max = self._prepare_chart_data()
+    def get_chart_data(self):
+        prepared, downloads_max = self.prepare_chart_data()
         prepared_dict = {}
         for di in prepared:
             prepared_dict[di.d_date] = di
         today = datetime.date.today()
         downloads_by_dates = []
-        for days_to_add in range(self.REPORT_RANGE_IN_DAYS):
+        for days_to_add in range(self.REPORT_RANGE):
             dt = today - datetime.timedelta(days=days_to_add)
             dt = str(dt)
             if dt in prepared_dict:
@@ -124,8 +124,8 @@ class MyApp:
         downloads_by_dates = sorted(downloads_by_dates, reverse=False)
         return downloads_by_dates, downloads_max
 
-    def _build_chart(self):
-        data, max_data_value = self._get_chart_data()
+    def build_chart(self):
+        data, max_data_value = self.get_chart_data()
         if max_data_value == 0:
             max_data_value = 1
         # https://stackoverflow.com/questions/35666573/use-tkinter-to-draw-a-specific-bar-chart
@@ -145,11 +145,11 @@ class MyApp:
             self.canvas.create_rectangle(x0, y0, x1, y1, fill=hex_color)
             text_1 = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
             x_rect_offset = ((x1 - x0) / 2)
-            self._center_align(text_1, x_rect_offset)
+            self.center_align(text_1, x_rect_offset)
             text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(day))
-            self._center_align(text_2, x_rect_offset)
+            self.center_align(text_2, x_rect_offset)
 
-    def _center_align(self, text_id, x_rect_offset):
+    def center_align(self, text_id, x_rect_offset):
         text_box = self.canvas.bbox(text_id)
         text_box_x0 = text_box[0]
         text_box_x1 = text_box[2]
@@ -157,11 +157,11 @@ class MyApp:
         # https://stackoverflow.com/questions/28754224/tkinter-how-to-horizontally-center-canvas-text
         self.canvas.move(text_id, x_rect_offset - x_text_offset, -16)
 
-    def _update_ui(self, text):
+    def update_ui(self, text):
         self.label_release_info.config(text=text)
-        self._build_chart()
+        self.build_chart()
 
-    def _update_db(self, release_downloads_count):
+    def update_db(self, release_downloads_count):
         today = datetime.date.today()
         today = str(today)
         downloads_arr = self.d_dao.find(str(self.release_path.r_id), today)
@@ -179,7 +179,7 @@ class MyApp:
                 self.ds.commit()
 
     @staticmethod
-    def _get_release_header(release):
+    def get_release_header(release):
         tag = release.get('tag_name')
         if not tag:
             tag_url = release['html_url']
@@ -192,12 +192,12 @@ class MyApp:
             release_name = f"'{tag}'"
         return tag, release_name, published_at
 
-    def _process_releases(self, releases, tag_name) -> str:
+    def process_releases(self, releases, tag_name) -> str:
         release_files_info = ''
         total_downloads = 0
         release_info = None
         for release in releases:
-            tag, release_name, published_at = self._get_release_header(release)
+            tag, release_name, published_at = self.get_release_header(release)
             release_downloads_count = 0
             for file in release['assets']:
                 dc = file.get('download_count')
@@ -210,22 +210,30 @@ class MyApp:
                     file_name = file['name']
                     release_files_info += f'\n{file_name}: {file_download_count}'
             if tag_name == tag:
-                self._update_db(release_downloads_count)
-                published = parser.parse(published_at).date()
-                today = datetime.date.today()
-                days = (today - published).days
-                release_info = f"Release {release_name}\n" \
-                               f"Published at {published_at}\n " \
-                               f"{days} days ago\n" \
-                               f"Downloads: {release_downloads_count}\n" \
-                               f"{round(release_downloads_count/days)} times a day\n" \
-                               f"{release_files_info}"
+                self.update_db(release_downloads_count)
+                release_info = self.get_release_info(release_name, published_at, release_downloads_count)
+                release_info += f"{release_files_info}"
             total_downloads += release_downloads_count
         return f'{release_info}\n\nTotal Downloads: {total_downloads}'
 
-    def _show_stat(self):
+    @staticmethod
+    def get_release_info(release_name, published_at, release_downloads_count):
+        published = parser.parse(published_at).date()
+        today = datetime.date.today()
+        days_from_release = (today - published).days
+        yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
+        days_to_yesterday = (yesterday - published).days
+        avg_downloads_a_day = round(release_downloads_count / days_to_yesterday, 1)
+        release_info = f"Release {release_name}\n" \
+                       f"Published at {published_at}\n " \
+                       f"{days_from_release} days ago\n" \
+                       f"Downloads: {release_downloads_count}\n" \
+                       f"{avg_downloads_a_day} times a day\n"
+        return release_info
+
+    def show_stat(self):
         try:
-            user, repo, tag_name = self._load_settings()
+            user, repo, tag_name = self.load_settings()
             self.root.title(f'{user}/{repo}/{tag_name}')
             url = f'https://api.github.com/repos/{user}/{repo}/releases'
             response = requests.get(url)
@@ -233,8 +241,8 @@ class MyApp:
             releases = response.json()
             # with open("release.json", 'w+') as fileToSave:
             #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
-            release_info = self._process_releases(releases, tag_name)
-            self._update_ui(release_info)
+            release_info = self.process_releases(releases, tag_name)
+            self.update_ui(release_info)
         except Exception as e:
             logger.exception(e)
             messagebox.showerror(title='Error', message=e)
