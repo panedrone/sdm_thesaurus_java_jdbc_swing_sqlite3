@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import datetime
 
 import os
@@ -95,34 +96,34 @@ class MyApp:
             return res, res[0].d_downloads
         res = sorted(res, key=lambda d: d.d_downloads)
         tmp = deepcopy(res)
-        downloads_max = -1
         for i in range(1, len(res)):
             curr = res[i]
             prev = tmp[i - 1]
             diff = curr.d_downloads - prev.d_downloads
             curr.d_downloads = diff
-            if diff > downloads_max:
-                downloads_max = diff
-        return res, downloads_max
+        # res = sorted(res, key=lambda d: d.d_date, reverse=False)
+        return res
 
     def get_chart_data(self):
-        prepared, downloads_max = self.prepare_chart_data()
+        prepared = self.prepare_chart_data()
         prepared_dict = {}
         for di in prepared:
             prepared_dict[di.d_date] = di
         today = datetime.date.today()
-        downloads_by_dates = []
+        downloads_max = -1
+        downloads_data = []
         for days_to_add in range(self.REPORT_RANGE):
             dt = today - datetime.timedelta(days=days_to_add)
             dt = str(dt)
             if dt in prepared_dict:
-                downloads_by_date = prepared_dict[dt].d_downloads
+                dt_downloads = prepared_dict[dt].d_downloads
             else:
-                downloads_by_date = 0
-            dt = dt.split("-")[2]
-            downloads_by_dates.append((dt, downloads_by_date))
-        downloads_by_dates = sorted(downloads_by_dates, reverse=False)
-        return downloads_by_dates, downloads_max
+                dt_downloads = 0
+            if dt_downloads > downloads_max:
+                downloads_max = dt_downloads
+            downloads_data.append((dt, dt_downloads))
+        downloads_data = sorted(downloads_data, reverse=False)
+        return downloads_data, downloads_max
 
     def build_chart(self):
         data, max_data_value = self.get_chart_data()
@@ -137,6 +138,7 @@ class MyApp:
         self.canvas.delete("all")
         for x, y_tuple in enumerate(data):
             day, y = y_tuple
+            day = day.split("-")[2]
             x0 = x * x_stretch + x * x_width + x_gap
             y0 = self.CHART_HEIGHT - (y * y_stretch + y_gap)
             x1 = x * x_stretch + x * x_width + x_width + x_gap
@@ -221,9 +223,12 @@ class MyApp:
         published = parser.parse(published_at).date()
         today = datetime.date.today()
         days_from_release = (today - published).days
-        yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
-        days_to_yesterday = (yesterday - published).days
-        avg_downloads_a_day = round(release_downloads_count / days_to_yesterday, 1)
+        if days_from_release > 1:
+            yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
+            days_to_yesterday = (yesterday - published).days
+            avg_downloads_a_day = round(release_downloads_count / days_to_yesterday, 1)
+        else:
+            avg_downloads_a_day = release_downloads_count
         release_info = f"Release {release_name}\n" \
                        f"Published at {published_at}\n " \
                        f"{days_from_release} days ago\n" \
