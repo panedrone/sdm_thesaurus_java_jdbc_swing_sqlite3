@@ -241,13 +241,13 @@ class MyApp:
         try:
             user, repo, tag_name = self.load_settings()
             self.root.title(f'{user}/{repo}/{tag_name}')
-            # url = f'https://api.github.com/repos/{user}/{repo}/releases'
-            # response = requests.get(url)
-            # response.raise_for_status()
-            # releases = response.json()
-            # # with open("release.json", 'w+') as fileToSave:
-            # #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
-            # release_info = self.process_releases(releases, tag_name)
+            url = f'https://api.github.com/repos/{user}/{repo}/releases'
+            response = requests.get(url)
+            response.raise_for_status()
+            releases = response.json()
+            # with open("release.json", 'w+') as fileToSave:
+            #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
+            release_info = self.process_releases(releases, tag_name)
             release_info = "?"
             self.update_ui(release_info)
         except Exception as e:
