@@ -2,14 +2,14 @@
 <dao-class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="dao.xsd">
 
-    <crud dto="DownloadsInfo" table="downloads">
+    <crud dto="Downloads" table="downloads">
         <create method="create_download"/>
         <update method="update_download"/>
     </crud>
 
-    <query-dto-list method="find(r_id, p_date)" dto="DownloadsInfo" ref="find_downloads.sql"/>
+    <query-dto-list method="find(r_id, p_date)" dto="Downloads" ref="find_downloads.sql"/>
 
-    <query-dto-list method="get_latest_ordered_by_date_desc(int r_id, int start, int count)" dto="DownloadsInfo"
+    <query-dto-list method="get_latest_ordered_by_date_desc(int r_id, int start, int count)" dto="Downloads"
                     ref="get_latest_ordered_by_date_desc.sql"/>
 
 </dao-class>

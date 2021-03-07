@@ -14,10 +14,10 @@ from dateutil import parser
 from dotenv import dotenv_values
 
 from dal.DataStore import DataStore
-from dal.DownloadsInfo import DownloadsInfo
-from dal.DownloadsDao import DownloadsDao
-from dal.Release import Release
-from dal.ReleasesDao import ReleasesDao
+from dal.downloads import Downloads
+from dal.downloads_dao import DownloadsDao
+from dal.release import Release
+from dal.releases_dao import ReleasesDao
 
 import logging
 
@@ -90,16 +90,17 @@ class MyApp:
     def prepare_chart_data(self):
         # read an extra one
         res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE + 1)
-        if len(res) == 0:
-            return res, 0
-        if len(res) == 1:
-            return res, res[0].d_downloads
-        res = sorted(res, key=lambda d: d.d_downloads)
+        if len(res) <= 1:
+            return res
+        res = sorted(res, key=lambda d: d.d_date)
         tmp = deepcopy(res)
         for i in range(1, len(res)):
             curr = res[i]
             prev = tmp[i - 1]
-            diff = curr.d_downloads - prev.d_downloads
+            if prev.d_downloads > curr.d_downloads:
+                diff = curr.d_downloads
+            else:
+                diff = curr.d_downloads - prev.d_downloads
             curr.d_downloads = diff
         # res = sorted(res, key=lambda d: d.d_date, reverse=False)
         return res
@@ -168,7 +169,7 @@ class MyApp:
         today = str(today)
         downloads_arr = self.d_dao.find(str(self.release_path.r_id), today)
         if len(downloads_arr) == 0:
-            di = DownloadsInfo()
+            di = Downloads()
             di.r_id = self.release_path.r_id
             di.d_date = today
             di.d_downloads = release_downloads_count
@@ -240,13 +241,14 @@ class MyApp:
         try:
             user, repo, tag_name = self.load_settings()
             self.root.title(f'{user}/{repo}/{tag_name}')
-            url = f'https://api.github.com/repos/{user}/{repo}/releases'
-            response = requests.get(url)
-            response.raise_for_status()
-            releases = response.json()
-            # with open("release.json", 'w+') as fileToSave:
-            #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
-            release_info = self.process_releases(releases, tag_name)
+            # url = f'https://api.github.com/repos/{user}/{repo}/releases'
+            # response = requests.get(url)
+            # response.raise_for_status()
+            # releases = response.json()
+            # # with open("release.json", 'w+') as fileToSave:
+            # #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
+            # release_info = self.process_releases(releases, tag_name)
+            release_info = "?"
             self.update_ui(release_info)
         except Exception as e:
             logger.exception(e)
