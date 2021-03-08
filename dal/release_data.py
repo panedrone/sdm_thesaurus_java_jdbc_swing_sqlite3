@@ -4,7 +4,7 @@ http://sqldalmaker.sourceforge.net
 """
 
 
-class Release:
+class ReleaseData:
     """
     @type r_id: int | None
     @type r_name: str | None

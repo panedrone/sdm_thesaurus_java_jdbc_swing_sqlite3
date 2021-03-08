@@ -13,10 +13,10 @@ from tkinter import messagebox
 from dateutil import parser
 from dotenv import dotenv_values
 
-from dal.DataStore import DataStore
+from dal.data_store import DataStore
 from dal.downloads import Downloads
 from dal.downloads_dao import DownloadsDao
-from dal.release import Release
+from dal.release_data import ReleaseData
 from dal.releases_dao import ReleasesDao
 
 import logging
@@ -58,7 +58,7 @@ class MyApp:
         self.canvas.pack()  # the same as fill=tk.BOTH
         b = tk.Button(frame, text="Update", command=self.show_stat, bd=1)
         b.grid(column=1, row=1, pady=(pad, 0), sticky="E")
-        self.release_path = Release()
+        self.release_data = ReleaseData()
         self.show_stat()
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
@@ -79,17 +79,17 @@ class MyApp:
         r_name = f"{user}/{repo}/{tag_name}"
         found = self.p_dao.find_by_name(r_name)
         if len(found) == 0:
-            self.release_path = Release()
-            self.release_path.r_name = r_name
-            self.p_dao.create_release(self.release_path)
+            self.release_data = ReleaseData()
+            self.release_data.r_name = r_name
+            self.p_dao.create_release(self.release_data)
             self.ds.commit()
         else:
-            self.release_path = found[0]
+            self.release_data = found[0]
         return user, repo, tag_name
 
     def prepare_chart_data(self):
         # read an extra one
-        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_path.r_id, 0, self.REPORT_RANGE + 1)
+        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
         if len(res) <= 1:
             return res
         res = sorted(res, key=lambda d: d.d_date)
@@ -167,10 +167,10 @@ class MyApp:
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
         today = str(today)
-        downloads_arr = self.d_dao.find(str(self.release_path.r_id), today)
+        downloads_arr = self.d_dao.find(str(self.release_data.r_id), today)
         if len(downloads_arr) == 0:
             di = Downloads()
-            di.r_id = self.release_path.r_id
+            di.r_id = self.release_data.r_id
             di.d_date = today
             di.d_downloads = release_downloads_count
             self.d_dao.create_download(di)
@@ -248,7 +248,7 @@ class MyApp:
             # with open("release.json", 'w+') as fileToSave:
             #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
             release_info = self.process_releases(releases, tag_name)
-            release_info = "?"
+            # release_info = "?"
             self.update_ui(release_info)
         except Exception as e:
             logger.exception(e)

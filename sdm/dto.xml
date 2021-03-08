@@ -3,6 +3,6 @@
              xsi:noNamespaceSchemaLocation="dto.xsd">
 
     <dto-class name="Downloads" ref="downloads"/>
-    <dto-class name="Release" ref="releases"/>
+    <dto-class name="ReleaseData" ref="releases"/>
 
 </dto-classes>
