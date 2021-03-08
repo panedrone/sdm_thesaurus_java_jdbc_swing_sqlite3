@@ -113,6 +113,7 @@ class MyApp:
         today = datetime.date.today()
         downloads_max = -1
         downloads_data = []
+        sum_for_period = 0
         for days_to_add in range(self.REPORT_RANGE):
             dt = today - datetime.timedelta(days=days_to_add)
             dt = str(dt)
@@ -120,14 +121,15 @@ class MyApp:
                 dt_downloads = prepared_dict[dt].d_downloads
             else:
                 dt_downloads = 0
+            sum_for_period += dt_downloads
             if dt_downloads > downloads_max:
                 downloads_max = dt_downloads
             downloads_data.append((dt, dt_downloads))
         downloads_data = sorted(downloads_data, reverse=False)
-        return downloads_data, downloads_max
+        return downloads_data, downloads_max, sum_for_period
 
     def build_chart(self):
-        data, max_data_value = self.get_chart_data()
+        data, max_data_value, sum_for_period = self.get_chart_data()
         if max_data_value == 0:
             max_data_value = 1
         # https://stackoverflow.com/questions/35666573/use-tkinter-to-draw-a-specific-bar-chart
@@ -151,6 +153,7 @@ class MyApp:
             self.center_align(text_1, x_rect_offset)
             text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(day))
             self.center_align(text_2, x_rect_offset)
+        return sum_for_period
 
     def center_align(self, text_id, x_rect_offset):
         text_box = self.canvas.bbox(text_id)
@@ -161,8 +164,10 @@ class MyApp:
         self.canvas.move(text_id, x_rect_offset - x_text_offset, -16)
 
     def update_ui(self, text):
+        sum_for_period = self.build_chart()
+        avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
+        text += f"{avg_for_period} times a day (last {self.REPORT_RANGE})\n"
         self.label_release_info.config(text=text)
-        self.build_chart()
 
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
@@ -217,7 +222,7 @@ class MyApp:
                 release_info = self.get_release_info(release_name, published_at, release_downloads_count)
                 release_info += f"{release_files_info}"
             total_downloads += release_downloads_count
-        return f'{release_info}\n\nTotal Downloads: {total_downloads}'
+        return f'{release_info}\n\nTotal Downloads: {total_downloads}\n'
 
     @staticmethod
     def get_release_info(release_name, published_at, release_downloads_count):
@@ -248,7 +253,7 @@ class MyApp:
             # with open("release.json", 'w+') as fileToSave:
             #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
             release_info = self.process_releases(releases, tag_name)
-            # release_info = "?"
+            # release_info = "?\n"
             self.update_ui(release_info)
         except Exception as e:
             logger.exception(e)
