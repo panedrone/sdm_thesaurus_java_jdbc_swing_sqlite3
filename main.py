@@ -51,20 +51,37 @@ class MyApp:
         frame.pack(padx=pad, pady=pad)
         self.label_release_info = tk.Label(frame, bd=1, padx=pad)
         self.label_release_info.grid(column=0, row=0)
+        text = "Click 'Update'\nfor recent stat from GitHub"
+        self.label_release_info.config(text=text)
         canvas_panel = tk.PanedWindow(frame, relief='sunken', bd=1)
         canvas_panel.grid(column=1, row=0, padx=(pad, 0))
         # === panedrone: don't use tk.Label as Canvas container because of buggy repaint behavior
         self.canvas = tk.Canvas(canvas_panel, relief='sunken', width=self.CHART_WIDTH, height=self.CHART_HEIGHT)
         self.canvas.pack()  # the same as fill=tk.BOTH
-        b = tk.Button(frame, text="Update", command=self.show_stat, bd=1)
-        b.grid(column=1, row=1, pady=(pad, 0), sticky="E")
+        buttons_panel = tk.PanedWindow(frame)
+        buttons_panel.grid(column=1, row=1, pady=(pad, 0), sticky="E")
+        tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=0, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=1, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=2, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
-        self.show_stat()
+        self.raw_stat = False
+        self.show_stat(False)
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
 
     def run(self):
         self.root.mainloop()
+
+    def show_raw(self):
+        self.raw_stat = True
+        self.show_stat(False)
+
+    def show_by_days(self):
+        self.raw_stat = False
+        self.show_stat(False)
+
+    def show_stat2(self):
+        self.show_stat(True)
 
     def load_settings(self):
         if len(sys.argv) > 1:
@@ -93,6 +110,8 @@ class MyApp:
         if len(res) <= 1:
             return res
         res = sorted(res, key=lambda d: d.d_date)
+        if self.raw_stat:
+            return res
         tmp = deepcopy(res)
         for i in range(1, len(res)):
             curr = res[i]
@@ -165,8 +184,11 @@ class MyApp:
 
     def update_ui(self, text):
         sum_for_period = self.build_chart()
-        avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
-        text += f"{avg_for_period} times a day (last {self.REPORT_RANGE})\n"
+        if text:
+            avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
+            text += f"{avg_for_period} times a day (last {self.REPORT_RANGE})\n"
+        # else:
+        #     text = "Click 'Update'\nfor recent stat from GitHub"
         self.label_release_info.config(text=text)
 
     def update_db(self, release_downloads_count):
@@ -242,10 +264,13 @@ class MyApp:
                        f"{avg_downloads_a_day} times a day\n"
         return release_info
 
-    def show_stat(self):
+    def show_stat(self, query_github):
         try:
             user, repo, tag_name = self.load_settings()
             self.root.title(f'{user}/{repo}/{tag_name}')
+            if not query_github:
+                self.update_ui(None)
+                return
             url = f'https://api.github.com/repos/{user}/{repo}/releases'
             response = requests.get(url)
             response.raise_for_status()
