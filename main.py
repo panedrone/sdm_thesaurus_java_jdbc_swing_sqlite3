@@ -51,8 +51,6 @@ class MyApp:
         frame.pack(padx=pad, pady=pad)
         self.label_release_info = tk.Label(frame, bd=1, padx=pad)
         self.label_release_info.grid(column=0, row=0)
-        text = "Click 'Update'\nfor recent stat from GitHub"
-        self.label_release_info.config(text=text)
         canvas_panel = tk.PanedWindow(frame, relief='sunken', bd=1)
         canvas_panel.grid(column=1, row=0, padx=(pad, 0))
         # === panedrone: don't use tk.Label as Canvas container because of buggy repaint behavior
@@ -65,7 +63,9 @@ class MyApp:
         tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=2, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.raw_stat = False
-        self.show_stat(False)
+        user, repo, tag_name = self.load_settings_and_data()
+        self.root.title(f'{user}/{repo}/{tag_name}')
+        self.update_ui("Click 'Update'\nfor recent stat from GitHub\n")
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
 
@@ -83,7 +83,7 @@ class MyApp:
     def show_stat2(self):
         self.show_stat(True)
 
-    def load_settings(self):
+    def load_settings_and_data(self):
         if len(sys.argv) > 1:
             env = sys.argv[1]
         else:
@@ -106,29 +106,28 @@ class MyApp:
 
     def prepare_chart_data(self):
         # read an extra one
-        res = self.d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
-        if len(res) <= 1:
-            return res
-        res = sorted(res, key=lambda d: d.d_date)
-        if self.raw_stat:
-            return res
-        tmp = deepcopy(res)
-        for i in range(1, len(res)):
-            curr = res[i]
+        raw = self.d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
+        raw = sorted(raw, key=lambda d: d.d_date)
+        tmp = deepcopy(raw)
+        by_days = deepcopy(raw)
+        for i in range(1, len(by_days)):
+            curr = by_days[i]
             prev = tmp[i - 1]
             if prev.d_downloads > curr.d_downloads:
                 diff = curr.d_downloads
             else:
                 diff = curr.d_downloads - prev.d_downloads
             curr.d_downloads = diff
-        # res = sorted(res, key=lambda d: d.d_date, reverse=False)
-        return res
+        return raw, by_days
 
     def get_chart_data(self):
-        prepared = self.prepare_chart_data()
-        prepared_dict = {}
-        for di in prepared:
-            prepared_dict[di.d_date] = di
+        raw, by_days = self.prepare_chart_data()
+        raw_dict = {}
+        for di in raw:
+            raw_dict[di.d_date] = di
+        by_days_dict = {}
+        for di in by_days:
+            by_days_dict[di.d_date] = di
         today = datetime.date.today()
         downloads_max = -1
         downloads_data = []
@@ -136,11 +135,13 @@ class MyApp:
         for days_to_add in range(self.REPORT_RANGE):
             dt = today - datetime.timedelta(days=days_to_add)
             dt = str(dt)
-            if dt in prepared_dict:
-                dt_downloads = prepared_dict[dt].d_downloads
+            if dt in by_days_dict:
+                dt_downloads = by_days_dict[dt].d_downloads
+                sum_for_period += dt_downloads
+                if self.raw_stat:
+                    dt_downloads = raw_dict[dt].d_downloads
             else:
                 dt_downloads = 0
-            sum_for_period += dt_downloads
             if dt_downloads > downloads_max:
                 downloads_max = dt_downloads
             downloads_data.append((dt, dt_downloads))
@@ -184,12 +185,10 @@ class MyApp:
 
     def update_ui(self, text):
         sum_for_period = self.build_chart()
+        avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
         if text:
-            avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
             text += f"{avg_for_period} times a day (last {self.REPORT_RANGE})\n"
-        # else:
-        #     text = "Click 'Update'\nfor recent stat from GitHub"
-        self.label_release_info.config(text=text)
+            self.label_release_info.config(text=text)
 
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
@@ -222,11 +221,11 @@ class MyApp:
             release_name = f"'{tag}'"
         return tag, release_name, published_at
 
-    def process_releases(self, releases, tag_name) -> str:
+    def parse_github_response(self, releases_json, tag_name) -> str:
         release_files_info = ''
         total_downloads = 0
         release_info = None
-        for release in releases:
+        for release in releases_json:
             tag, release_name, published_at = self.get_release_header(release)
             release_downloads_count = 0
             for file in release['assets']:
@@ -266,7 +265,7 @@ class MyApp:
 
     def show_stat(self, query_github):
         try:
-            user, repo, tag_name = self.load_settings()
+            user, repo, tag_name = self.load_settings_and_data()
             self.root.title(f'{user}/{repo}/{tag_name}')
             if not query_github:
                 self.update_ui(None)
@@ -274,10 +273,10 @@ class MyApp:
             url = f'https://api.github.com/repos/{user}/{repo}/releases'
             response = requests.get(url)
             response.raise_for_status()
-            releases = response.json()
+            releases_json = response.json()
             # with open("release.json", 'w+') as fileToSave:
             #     json.dump(releases, fileToSave, ensure_ascii=True, indent=4, sort_keys=True)
-            release_info = self.process_releases(releases, tag_name)
+            release_info = self.parse_github_response(releases_json, tag_name)
             # release_info = "?\n"
             self.update_ui(release_info)
         except Exception as e:
