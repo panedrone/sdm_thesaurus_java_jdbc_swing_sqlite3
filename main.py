@@ -37,6 +37,8 @@ class MyApp:
 
     REPORT_RANGE = 14
 
+    RELEASE_INFO_FILE_PATH = "./release_info.txt"
+
     def __init__(self):
         # === panedrone: not needed:
         # root.geometry("600x300")
@@ -65,7 +67,14 @@ class MyApp:
         self.raw_stat = False
         user, repo, tag_name = self.load_settings_and_data()
         self.root.title(f'{user}/{repo}/{tag_name}')
-        self.update_ui("Click 'Update'\nfor recent stat from GitHub\n")
+        if os.path.isfile(self.RELEASE_INFO_FILE_PATH):
+            with open(self.RELEASE_INFO_FILE_PATH, "r") as file:
+                release_info = file.read()
+        else:
+            release_info = None
+        if not release_info:
+            release_info = "Click 'Update'\nfor recent stat from GitHub\n"
+        self.update_ui(release_info)
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
 
@@ -187,7 +196,7 @@ class MyApp:
         sum_for_period = self.build_chart()
         avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
         if text:
-            text += f"{avg_for_period} times a day (last {self.REPORT_RANGE})\n"
+            text += f"{avg_for_period} times a day (in last {self.REPORT_RANGE})\n"
             self.label_release_info.config(text=text)
 
     def update_db(self, release_downloads_count):
@@ -225,8 +234,13 @@ class MyApp:
         release_files_info = ''
         total_downloads = 0
         release_info = None
+        today = datetime.date.today()
+        published_min = today
         for release in releases_json:
             tag, release_name, published_at = self.get_release_header(release)
+            published = parser.parse(published_at).date()
+            if published < published_min:
+                published_min = published
             release_downloads_count = 0
             for file in release['assets']:
                 dc = file.get('download_count')
@@ -243,7 +257,16 @@ class MyApp:
                 release_info = self.get_release_info(release_name, published_at, release_downloads_count)
                 release_info += f"{release_files_info}"
             total_downloads += release_downloads_count
-        return f'{release_info}\n\nTotal Downloads: {total_downloads}\n'
+        yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
+        days_from_release = (yesterday - published_min).days
+        if days_from_release > 0:
+            avg_downloads_a_day = round(total_downloads / days_from_release, 1)
+        else:
+            avg_downloads_a_day = total_downloads
+        return f'{release_info}\n\nStarted at {published_min}\n' \
+               f'{days_from_release} days ago\n' \
+               f'{total_downloads} total\n' \
+               f'{avg_downloads_a_day} times a day\n'
 
     @staticmethod
     def get_release_info(release_name, published_at, release_downloads_count):
@@ -279,6 +302,8 @@ class MyApp:
             release_info = self.parse_github_response(releases_json, tag_name)
             # release_info = "?\n"
             self.update_ui(release_info)
+            with open(self.RELEASE_INFO_FILE_PATH, "w") as file:
+                file.write(release_info)
         except Exception as e:
             logger.exception(e)
             messagebox.showerror(title='Error', message=e)
