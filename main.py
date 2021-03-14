@@ -58,9 +58,9 @@ class MyApp:
         self.canvas.pack()  # the same as fill=tk.BOTH
         buttons_panel = tk.PanedWindow(frame)
         buttons_panel.grid(column=1, row=1, pady=(pad, 0), sticky="E")
-        tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=0, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=1, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=2, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=0, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=1, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=2, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.raw_stat = False
         user, repo, tag_name = self.load_settings_and_data()
