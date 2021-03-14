@@ -13,7 +13,7 @@
 				<xs:element ref="ide" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="cpp" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="jdbc" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="type-map" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="type-map" minOccurs="1" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -31,6 +31,7 @@
 			<xs:attribute name="inheritance" use="required" type="xs:string" />
 			<xs:attribute name="field-names-mode" use="required"
 				type="xs:int" />
+			<xs:attribute name="single-file" use="required" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 
@@ -80,7 +81,7 @@
 	</xs:element>
 	<xs:element name="type">
 		<xs:complexType>
-			<xs:attribute name="java" use="required" type="xs:string" />
+			<xs:attribute name="detected" use="required" type="xs:string" />
 			<xs:attribute name="target" use="required" type="xs:string" />
 		</xs:complexType>
 	</xs:element>

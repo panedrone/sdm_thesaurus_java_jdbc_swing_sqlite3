@@ -2,56 +2,22 @@
 <settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="settings.xsd">
 
-    <!-- target: base path to the folder/package of generated files (relative
-        to the project root); ensure presence of __init__.py for Python; -->
-    <!-- sql: base folder of SQL files (relative to the project root); -->
-
     <folders target="dal" sql="sdm/sql"/>
 
-    <!-- scope: (only Java and PHP) package name of DTO classes for Java or
-        name-space name of DTO classes for PHP; -->
-    <!-- inheritance: (only Java) fully-qualified name of base class; example
-        for GWT: 1) inheritance="implements com.google.gwt.user.client.rpc.IsSerializable"
-        2) target class: public class Word implements com.google.gwt.user.client.rpc.IsSerializable... -->
-    <!-- field-names-mode (Java only): 0 - as column names; 1 - camelCase; 2 - snake_case; -->
-
-    <dto scope="" inheritance="" field-names-mode="0"/>
-
-    <!-- scope: (only Java and PHP) package name of DAO classes for Java or
-        namespace name of DAO classes for PHP; -->
+    <dto scope="" inheritance="" field-names-mode="0" single-file=""/>
 
     <dao scope=""/>
 
-    <!-- location of external VM file (relative to the project root): -->
-
     <external-vm-file path=""/>
-
-    <!-- IDE integration -->
 
     <ide event-log="true"/>
 
-    <!-- prefix of generated C++ classes: -->
-
     <cpp class-prefix=""/>
-
-    <!-- jar: location of JDBC driver JAR file (relative to the project root); -->
-    <!-- class: JDBC driver class name; -->
-    <!-- url: JDBC connection URL (use $PROJECT_DIR$ or ${project_loc} if you
-        need to specify project path); -->
-    <!-- user: user name; -->
-    <!-- pwd: password; -->
 
     <jdbc jar="sdm/sqlite-jdbc-3.34.0.jar" class="org.sqlite.JDBC"
           url="jdbc:sqlite:$PROJECT_DIR$/dal/my-github.sqlite3" user="" pwd=""/>
 
-    <!-- At the moment, type-map is used only for C++. Below is an example for
-        C++ and SQLite. -->
-
-    <type-map default="CValue">
-        <type java="java.lang.Long" target="CLong"/>
-        <type java="java.lang.Double" target="CDouble"/>
-        <type java="java.lang.String" target="CText"/>
-        <type java="byte[]" target="CBlob"/>
+    <type-map default="">
     </type-map>
 
 </settings>
