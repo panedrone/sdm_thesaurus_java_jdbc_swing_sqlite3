@@ -37,8 +37,6 @@ class MyApp:
 
     REPORT_RANGE = 14
 
-    RELEASE_INFO_FILE_PATH = "./release_info.txt"
-
     def __init__(self):
         # === panedrone: not needed:
         # root.geometry("600x300")
@@ -65,16 +63,8 @@ class MyApp:
         tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=2, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.raw_stat = False
-        user, repo, tag_name = self.load_settings_and_data()
-        self.root.title(f'{user}/{repo}/{tag_name}')
-        if os.path.isfile(self.RELEASE_INFO_FILE_PATH):
-            with open(self.RELEASE_INFO_FILE_PATH, "r") as file:
-                release_info = file.read()
-        else:
-            release_info = None
-        if not release_info:
-            release_info = "Click 'Update'\nfor recent stat from GitHub\n"
-        self.update_ui(release_info)
+        self.release_info_file_path = None
+        self.show_stat(False)
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
 
@@ -290,8 +280,15 @@ class MyApp:
         try:
             user, repo, tag_name = self.load_settings_and_data()
             self.root.title(f'{user}/{repo}/{tag_name}')
+            self.release_info_file_path = f"./{user}.{repo}.{tag_name}.txt"
             if not query_github:
-                self.update_ui(None)
+                release_info = None
+                if os.path.isfile(self.release_info_file_path):
+                    with open(self.release_info_file_path, "r") as file:
+                        release_info = file.read()
+                if not release_info:
+                    release_info = "Click 'Update'\nfor recent stat from GitHub\n"
+                self.update_ui(release_info)
                 return
             url = f'https://api.github.com/repos/{user}/{repo}/releases'
             response = requests.get(url)
@@ -302,7 +299,7 @@ class MyApp:
             release_info = self.parse_github_response(releases_json, tag_name)
             # release_info = "?\n"
             self.update_ui(release_info)
-            with open(self.RELEASE_INFO_FILE_PATH, "w") as file:
+            with open(self.release_info_file_path, "w") as file:
                 file.write(release_info)
         except Exception as e:
             logger.exception(e)
