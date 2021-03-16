@@ -186,7 +186,7 @@ class MyApp:
         sum_for_period = self.build_chart()
         avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
         if text:
-            text += f"{avg_for_period} times a day (in last {self.REPORT_RANGE})\n"
+            text += f"{avg_for_period} times a day in last {self.REPORT_RANGE}\n"
             self.label_release_info.config(text=text)
 
     def update_db(self, release_downloads_count):
