@@ -1,5 +1,5 @@
 # sdm.demo.python.tkinter.sqlite3.github-stat
-Demo of how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Python/Tkinter/SQLite3.
+Demo of how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Python/Tkinter.
 
 https://docs.github.com/en/rest/reference/repos
 
