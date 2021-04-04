@@ -1,5 +1,5 @@
 # sdm.demo.python.tkinter.sqlite3.github-stat
-Python/Tkinter application to collect and display statistics from GitHub repo API.
+Demo of how to use SQL DAL Maker + Python/Tkinter/SQLite3.
 
 https://docs.github.com/en/rest/reference/repos
 
