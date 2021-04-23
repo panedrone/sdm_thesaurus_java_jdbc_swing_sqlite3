@@ -5,6 +5,4 @@
     <dto-class name="Downloads" ref="downloads"/>
     <dto-class name="ReleaseData" ref="releases"/>
 
-    <dto-class name="Task" ref="tasks"/>
-
 </dto-classes>
