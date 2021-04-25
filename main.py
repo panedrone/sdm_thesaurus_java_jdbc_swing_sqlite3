@@ -228,9 +228,9 @@ class MyApp:
         published_min = today
         for release in releases_json:
             tag, release_name, published_at = self.get_release_header(release)
-            published = parser.parse(published_at).date()
-            if published < published_min:
-                published_min = published
+            published_dt = parser.parse(published_at).date()
+            if published_dt < published_min:
+                published_min = published_dt
             release_downloads_count = 0
             for file in release['assets']:
                 dc = file.get('download_count')
@@ -247,31 +247,29 @@ class MyApp:
                 release_info = self.get_release_info(release_name, published_at, release_downloads_count)
                 release_info += f"{release_files_info}"
             total_downloads += release_downloads_count
-        yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
-        days_from_release = (yesterday - published_min).days
-        if days_from_release > 0:
-            avg_downloads_a_day = round(total_downloads / days_from_release, 1)
-        else:
-            avg_downloads_a_day = total_downloads
+        days_from_start_date, avg_downloads_a_day = self.get_period_info(published_min, total_downloads)
         return f'{release_info}\n\nStarted at {published_min}\n' \
-               f'{days_from_release} days ago\n' \
+               f'{days_from_start_date} days ago\n' \
                f'{total_downloads} total\n' \
                f'{avg_downloads_a_day} times a day\n'
 
     @staticmethod
-    def get_release_info(release_name, published_at, release_downloads_count):
-        published = parser.parse(published_at).date()
-        today = datetime.date.today()
-        days_from_release = (today - published).days
-        if days_from_release > 1:
-            yesterday = today - datetime.timedelta(days=1)  # today is mainly incomplete
-            days_to_yesterday = (yesterday - published).days
-            avg_downloads_a_day = round(release_downloads_count / days_to_yesterday, 1)
+    def get_period_info(dt_period_start, period_downloads_count):
+        dt_today = datetime.date.today()
+        days_from_start_date = (dt_today - dt_period_start).days - 1  # today's one is mainly incomplete
+        if days_from_start_date > 0:
+            avg_downloads_a_day = round(period_downloads_count / days_from_start_date, 1)
         else:
-            avg_downloads_a_day = release_downloads_count
+            days_from_start_date = 0
+            avg_downloads_a_day = period_downloads_count
+        return days_from_start_date, avg_downloads_a_day
+
+    def get_release_info(self, release_name, published_at, release_downloads_count):
+        published_dt = parser.parse(published_at).date()
+        days_from_start_date, avg_downloads_a_day = self.get_period_info(published_dt, release_downloads_count)
         release_info = f"Release {release_name}\n" \
                        f"Published at {published_at}\n " \
-                       f"{days_from_release} days ago\n" \
+                       f"{days_from_start_date} days ago\n" \
                        f"Downloads: {release_downloads_count}\n" \
                        f"{avg_downloads_a_day} times a day\n"
         return release_info
