@@ -250,7 +250,7 @@ class MyApp:
         days_from_start_date, avg_downloads_a_day = self.get_period_info(published_min, total_downloads)
         return f'{release_info}\n\nStarted at {published_min}\n' \
                f'{days_from_start_date} days ago\n' \
-               f'{total_downloads} total\n' \
+               f'{total_downloads} downloads\n' \
                f'{avg_downloads_a_day} times a day\n'
 
     @staticmethod
@@ -268,9 +268,9 @@ class MyApp:
         published_dt = parser.parse(published_at).date()
         days_from_start_date, avg_downloads_a_day = self.get_period_info(published_dt, release_downloads_count)
         release_info = f"Release {release_name}\n" \
-                       f"Published at {published_at}\n " \
+                       f"Published at {published_at}\n" \
                        f"{days_from_start_date} days ago\n" \
-                       f"Downloads: {release_downloads_count}\n" \
+                       f"{release_downloads_count} downloads\n" \
                        f"{avg_downloads_a_day} times a day\n"
         return release_info
 
