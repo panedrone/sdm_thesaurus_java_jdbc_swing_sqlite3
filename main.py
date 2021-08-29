@@ -90,7 +90,7 @@ class MyApp:
         dotenv_path = os.path.join(os.path.dirname(__file__), env)
         values = dotenv_values(dotenv_path)
         user = values.get("USER")
-        repo = values.get("PERO")
+        repo = values.get("REPO")
         tag_name = values.get("TAG")
         r_name = f"{user}/{repo}/{tag_name}"
         found = self.p_dao.find_by_name(r_name)
