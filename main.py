@@ -32,10 +32,10 @@ logger = logging.getLogger(__name__)
 
 
 class MyApp:
-    CHART_WIDTH = 480
+    CHART_WIDTH = 1024
     CHART_HEIGHT = 320
 
-    REPORT_RANGE = 14
+    REPORT_RANGE = 30
 
     def __init__(self):
         # === panedrone: not needed:
@@ -104,19 +104,17 @@ class MyApp:
         return user, repo, tag_name
 
     def prepare_chart_data(self):
-        # read an extra one
         raw = self.d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
         raw = sorted(raw, key=lambda d: d.d_date)
-        tmp = deepcopy(raw)
         by_days = deepcopy(raw)
-        for i in range(1, len(by_days)):
-            curr = by_days[i]
-            prev = tmp[i - 1]
-            if prev.d_downloads > curr.d_downloads:
-                diff = curr.d_downloads
+        for i in range(1, len(raw)):
+            raw_curr = raw[i]
+            raw_prev = raw[i - 1]
+            if raw_curr.d_downloads < raw_prev.d_downloads:
+                diff = 0
             else:
-                diff = curr.d_downloads - prev.d_downloads
-            curr.d_downloads = diff
+                diff = raw_curr.d_downloads - raw_prev.d_downloads
+            by_days[i].d_downloads = diff
         return raw, by_days
 
     def get_chart_data(self):
@@ -156,7 +154,7 @@ class MyApp:
         y_gap = 24
         x_stretch = 14
         x_width = 20
-        x_gap = 12
+        x_gap = 10
         self.canvas.delete("all")
         for x, y_tuple in enumerate(data):
             day, y = y_tuple
@@ -301,7 +299,7 @@ class MyApp:
                 file.write(release_info)
         except Exception as e:
             logger.exception(e)
-            messagebox.showerror(title='Error', message=e)
+            messagebox.showerror(title='Error', message=f"{e}")
 
 
 if __name__ == '__main__':
