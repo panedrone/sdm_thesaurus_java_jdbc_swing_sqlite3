@@ -4,6 +4,7 @@ import datetime
 import os
 import sys
 from copy import deepcopy
+from threading import Thread
 
 import requests
 import tkinter as tk
@@ -40,10 +41,6 @@ class MyApp:
     def __init__(self):
         # === panedrone: not needed:
         # root.geometry("600x300")
-        self.ds = DataStore()
-        self.ds.open()
-        self.d_dao = DownloadsDao(self.ds)
-        self.p_dao = ReleasesDao(self.ds)
         self.root = tk.Tk()
         self.root.resizable(width=False, height=False)
         frame = tk.Frame(self.root)
@@ -64,9 +61,11 @@ class MyApp:
         self.release_data = ReleaseData()
         self.raw_stat = False
         self.release_info_file_path = None
-        self.show_stat(False)
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
+        # self.show_stat(False)
+        thr = Thread(target=self.show_stat, args=(False,))
+        thr.start()
 
     def run(self):
         self.root.mainloop()
@@ -93,18 +92,31 @@ class MyApp:
         repo = values.get("REPO")
         tag_name = values.get("TAG")
         r_name = f"{user}/{repo}/{tag_name}"
-        found = self.p_dao.find_by_name(r_name)
-        if len(found) == 0:
-            self.release_data = ReleaseData()
-            self.release_data.r_name = r_name
-            self.p_dao.create_release(self.release_data)
-            self.ds.commit()
-        else:
-            self.release_data = found[0]
+        # -------------------------------
+        ds = DataStore()
+        ds.open()
+        try:
+            r_dao = ReleasesDao(ds)
+            found = r_dao.find_by_name(r_name)
+            if len(found) == 0:
+                self.release_data = ReleaseData()
+                self.release_data.r_name = r_name
+                r_dao.create_release(self.release_data)
+                ds.commit()
+            else:
+                self.release_data = found[0]
+        finally:
+            ds.close()
         return user, repo, tag_name
 
     def prepare_chart_data(self):
-        raw = self.d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
+        ds = DataStore()
+        ds.open()
+        try:
+            d_dao = DownloadsDao(ds)
+            raw = d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
+        finally:
+            ds.close()
         raw = sorted(raw, key=lambda d: d.d_date)
         by_days = deepcopy(raw)
         for i in range(1, len(raw)):
@@ -190,19 +202,25 @@ class MyApp:
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
         today = str(today)
-        downloads_arr = self.d_dao.find(str(self.release_data.r_id), today)
-        if len(downloads_arr) == 0:
-            di = Downloads()
-            di.r_id = self.release_data.r_id
-            di.d_date = today
-            di.d_downloads = release_downloads_count
-            self.d_dao.create_download(di)
-            self.ds.commit()
-        else:
-            if downloads_arr[0].d_downloads != release_downloads_count:
-                downloads_arr[0].d_downloads = release_downloads_count
-                self.d_dao.update_download(downloads_arr[0])
-                self.ds.commit()
+        ds = DataStore()
+        ds.open()
+        try:
+            d_dao = DownloadsDao(ds)
+            downloads_arr = d_dao.find(str(self.release_data.r_id), today)
+            if len(downloads_arr) == 0:
+                di = Downloads()
+                di.r_id = self.release_data.r_id
+                di.d_date = today
+                di.d_downloads = release_downloads_count
+                d_dao.create_download(di)
+                ds.commit()
+            else:
+                if downloads_arr[0].d_downloads != release_downloads_count:
+                    downloads_arr[0].d_downloads = release_downloads_count
+                    d_dao.update_download(downloads_arr[0])
+                    ds.commit()
+        finally:
+            ds.close()
 
     @staticmethod
     def get_release_header(release):
