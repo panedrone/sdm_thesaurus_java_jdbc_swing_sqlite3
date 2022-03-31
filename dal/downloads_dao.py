@@ -29,24 +29,23 @@ class DownloadsDao:
         sql = """update downloads set d_downloads=? where r_id=? and d_date=?"""
         return self.ds.exec_dml(sql, [p.d_downloads, p.r_id, p.d_date])
 
-    def find(self, r_id, p_date):
+    def find_downloads(self, r_id, d_date):
         """
-        @type r_id: str
-        @type p_date: str
+        @type r_id: int
+        @type d_date: str
         @rtype: list[Downloads]
         """
-        sql = """select * from downloads 
-                where r_id=? and d_date=?"""
+        sql = """select * from downloads where r_id=? and d_date=?"""
         _res = []
 
         def _map_cb(row):
             _obj = Downloads()
-            _obj.r_id = row["r_id"]  # t(r_id) <- q(r_id)
-            _obj.d_date = row["d_date"]  # t(d_date) <- q(d_date)
-            _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- q(d_downloads)
+            _obj.r_id = row["r_id"]  # t(r_id) <- t(r_id) [INFO] SQL-shortcut
+            _obj.d_date = row["d_date"]  # t(d_date) <- t(d_date)
+            _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- t(d_downloads)
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [r_id, p_date], _map_cb)
+        self.ds.query_all_rows(sql, [r_id, d_date], _map_cb)
         return _res
 
     def get_latest_ordered_by_date_desc(self, r_id, start, count):

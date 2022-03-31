@@ -63,11 +63,11 @@ class MyApp:
         self.release_info_file_path = None
         # center it last:
         self.root.eval('tk::PlaceWindow . center')
+
+    def run(self):
         # self.show_stat(False)
         thr = Thread(target=self.show_stat, args=(False,))
         thr.start()
-
-    def run(self):
         self.root.mainloop()
 
     def show_raw(self):
@@ -206,7 +206,7 @@ class MyApp:
         ds.open()
         try:
             d_dao = DownloadsDao(ds)
-            downloads_arr = d_dao.find(str(self.release_data.r_id), today)
+            downloads_arr = d_dao.find_downloads(self.release_data.r_id, today)
             if len(downloads_arr) == 0:
                 di = Downloads()
                 di.r_id = self.release_data.r_id
