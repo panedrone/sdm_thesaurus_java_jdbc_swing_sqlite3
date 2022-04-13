@@ -196,7 +196,7 @@ class MyApp:
         sum_for_period = self.build_chart()
         avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
         if text:
-            text += f"{avg_for_period} times a day in last {self.REPORT_RANGE}\n"
+            text += f"Past {self.REPORT_RANGE} days: {sum_for_period} downloads ({avg_for_period} a day)\n"
             self.label_release_info.config(text=text)
 
     def update_db(self, release_downloads_count):
@@ -264,10 +264,10 @@ class MyApp:
                 release_info += f"{release_files_info}"
             total_downloads += release_downloads_count
         days_from_start_date, avg_downloads_a_day = self.get_period_info(published_min, total_downloads)
-        return f'{release_info}\n\nStarted at {published_min}\n' \
+        return f'{release_info}\n\nThe 1st Release\n' \
+               f'Published at {published_min}\n' \
                f'{days_from_start_date} days ago\n' \
-               f'{total_downloads} downloads\n' \
-               f'{avg_downloads_a_day} times a day\n'
+               f'{total_downloads} downloads ({avg_downloads_a_day} a day)\n\n'
 
     @staticmethod
     def get_period_info(dt_period_start, period_downloads_count):
@@ -286,8 +286,7 @@ class MyApp:
         release_info = f"Release {release_name}\n" \
                        f"Published at {published_at}\n" \
                        f"{days_from_start_date} days ago\n" \
-                       f"{release_downloads_count} downloads\n" \
-                       f"{avg_downloads_a_day} times a day\n"
+                       f"{release_downloads_count} downloads ({avg_downloads_a_day} a day)\n"
         return release_info
 
     def show_stat(self, query_github):
