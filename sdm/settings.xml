@@ -29,5 +29,5 @@
         <type detected="java.lang.Boolean" target="bool"/>
         <type detected="java.util.Date" target="str"/>
     </type-map>
-
+    
 </settings>
