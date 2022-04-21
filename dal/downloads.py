@@ -12,6 +12,6 @@ class Downloads:
     """
 
     def __init__(self):
-        self.r_id = None  # t(r_id)
-        self.d_date = None  # t(d_date)
-        self.d_downloads = None  # t(d_downloads)
+        self.r_id = None  # t
+        self.d_date = None  # t
+        self.d_downloads = None  # t

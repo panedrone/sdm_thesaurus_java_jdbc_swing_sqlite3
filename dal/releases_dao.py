@@ -35,8 +35,8 @@ class ReleasesDao:
 
         def _map_cb(row):
             _obj = ReleaseData()
-            _obj.r_id = row["r_id"]  # t(r_id) <- q(r_id)
-            _obj.r_name = row["r_name"]  # t(r_name) <- q(r_name)
+            _obj.r_id = row["r_id"]  # t <- q
+            _obj.r_name = row["r_name"]  # t <- q
             _res.append(_obj)
 
         self.ds.query_all_rows(sql, [r_name], _map_cb)

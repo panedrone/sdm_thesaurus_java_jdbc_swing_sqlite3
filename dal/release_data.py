@@ -11,5 +11,5 @@ class ReleaseData:
     """
 
     def __init__(self):
-        self.r_id = None  # t(r_id)
-        self.r_name = None  # t(r_name)
+        self.r_id = None  # t
+        self.r_name = None  # t

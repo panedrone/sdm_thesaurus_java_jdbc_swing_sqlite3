@@ -40,9 +40,9 @@ class DownloadsDao:
 
         def _map_cb(row):
             _obj = Downloads()
-            _obj.r_id = row["r_id"]  # t(r_id) <- t(r_id) [INFO] SQL-shortcut
-            _obj.d_date = row["d_date"]  # t(d_date) <- t(d_date)
-            _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- t(d_downloads)
+            _obj.r_id = row["r_id"]  # t <- t [INFO] SQL-shortcut
+            _obj.d_date = row["d_date"]  # t <- t
+            _obj.d_downloads = row["d_downloads"]  # t <- t
             _res.append(_obj)
 
         self.ds.query_all_rows(sql, [r_id, d_date], _map_cb)
@@ -63,9 +63,9 @@ class DownloadsDao:
 
         def _map_cb(row):
             _obj = Downloads()
-            _obj.r_id = row["r_id"]  # t(r_id) <- q(r_id)
-            _obj.d_date = row["d_date"]  # t(d_date) <- q(d_date)
-            _obj.d_downloads = row["d_downloads"]  # t(d_downloads) <- q(d_downloads)
+            _obj.r_id = row["r_id"]  # t <- q
+            _obj.d_date = row["d_date"]  # t <- q
+            _obj.d_downloads = row["d_downloads"]  # t <- q
             _res.append(_obj)
 
         self.ds.query_all_rows(sql, [r_id, start, count], _map_cb)
