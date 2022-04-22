@@ -114,7 +114,9 @@ class MyApp:
         ds.open()
         try:
             d_dao = DownloadsDao(ds)
-            raw = d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, 0, self.REPORT_RANGE + 1)
+            today = datetime.date.today()
+            today = f"{today}"
+            raw = d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, today, 0, self.REPORT_RANGE + 1)
         finally:
             ds.close()
         raw = sorted(raw, key=lambda d: d.d_date)
