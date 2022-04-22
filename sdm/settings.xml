@@ -15,7 +15,7 @@
     <cpp class-prefix=""/>
 
     <jdbc jar="sdm/sqlite-jdbc-3.36.0.3.jar" class="org.sqlite.JDBC"
-          url="jdbc:sqlite:$PROJECT_DIR$/dal/my-github.sqlite3" user="" pwd=""/>
+          url="jdbc:sqlite:$PROJECT_DIR$/my-github.sqlite3" user="" pwd=""/>
 
     <type-map default="">
         <type detected="java.lang.Short" target="int"/>
