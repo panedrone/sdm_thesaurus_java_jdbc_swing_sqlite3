@@ -4,9 +4,9 @@
 
     <folders target="dal" sql="sdm/sql"/>
 
-    <dto scope="" inheritance="" field-names-mode="0" single-file=""/>
+    <dto scope="" inheritance="" field-names-mode="0" single-file="" macro=""/>
 
-    <dao scope=""/>
+    <dao scope="" macro=""/>
 
     <external-vm-file path=""/>
 
@@ -29,5 +29,7 @@
         <type detected="java.lang.Boolean" target="bool"/>
         <type detected="java.util.Date" target="str"/>
     </type-map>
+
+    <macros></macros>
     
 </settings>

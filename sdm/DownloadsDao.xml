@@ -9,7 +9,7 @@
 
     <query-dto-list method="find_downloads(r_id, d_date)" dto="Downloads" ref="downloads(r_id, d_date)"/>
 
-    <query-dto-list method="get_latest_ordered_by_date_desc(int r_id, str today, int start, int count)" dto="Downloads"
-                    ref="get_latest_ordered_by_date_desc.sql"/>
+    <query-dto-list method="get_downloads_ordered_by_date_asc(int r_id, str start_date, str end_date)" dto="Downloads"
+                    ref="get_downloads_ordered_by_date_asc.sql"/>
 
 </dao-class>

@@ -1,6 +1,8 @@
 # uncomment one of the imports below to use without django.db
 
 import sqlite3
+
+
 # import psycopg2
 # import mysql.connector
 
@@ -59,36 +61,34 @@ class DataStore:
 
     def __init__(self):
         self.conn = None
-        self.engine_type = self.EngineType.sqlite3
-        self.open()
-
-    def open(self):
-        # uncomment to use without django.db:
-
         self.conn = sqlite3.connect('my-github.sqlite3')
         self.engine_type = self.EngineType.sqlite3
 
-        # self.conn = mysql.connector.Connect(user='root', password='root', host='127.0.0.1', database='sakila')
-        # self.engine_type = self.EngineType.mysql
-
-        # self.conn = psycopg2.connect(host="localhost", database="my-tests", user="postgres", password="sa")
-        # self.engine_type = self.EngineType.postgresql
-
-        # print(self.conn.autocommit)
-
-        # uncomment to use with django.db:
-
-        # con = django.db.connections['default']
-        # engine = con.settings_dict["ENGINE"]
-        # if 'sqlite3' in engine:
-        #     self.engine_type = self.EngineType.sqlite3
-        # elif 'mysql' in engine:
-        #     self.engine_type = self.EngineType.mysql
-        # elif 'postgresql' in engine:
-        #     self.engine_type = self.EngineType.postgresql
-        # else:
-        #     raise Exception('Unexpected: ' + engine)
-        # self.conn = con
+    # def open(self):
+    #     # uncomment to use without django.db:
+    #
+    #
+    #     # self.conn = mysql.connector.Connect(user='root', password='root', host='127.0.0.1', database='sakila')
+    #     # self.engine_type = self.EngineType.mysql
+    #
+    #     # self.conn = psycopg2.connect(host="localhost", database="my-tests", user="postgres", password="sa")
+    #     # self.engine_type = self.EngineType.postgresql
+    #
+    #     # print(self.conn.autocommit)
+    #
+    #     # uncomment to use with django.db:
+    #
+    #     # con = django.db.connections['default']
+    #     # engine = con.settings_dict["ENGINE"]
+    #     # if 'sqlite3' in engine:
+    #     #     self.engine_type = self.EngineType.sqlite3
+    #     # elif 'mysql' in engine:
+    #     #     self.engine_type = self.EngineType.mysql
+    #     # elif 'postgresql' in engine:
+    #     #     self.engine_type = self.EngineType.postgresql
+    #     # else:
+    #     #     raise Exception('Unexpected: ' + engine)
+    #     # self.conn = con
 
     def close(self):
         if self.conn:

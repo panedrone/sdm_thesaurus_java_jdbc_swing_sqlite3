@@ -48,19 +48,18 @@ class DownloadsDao:
         self.ds.query_all_rows(sql, [r_id, d_date], _map_cb)
         return _res
 
-    def get_latest_ordered_by_date_desc(self, r_id, today, start, count):
+    def get_downloads_ordered_by_date_asc(self, r_id, start_date, end_date):
         """
         @type r_id: int
-        @type today: str
-        @type start: int
-        @type count: int
+        @type start_date: str
+        @type end_date: str
         @rtype: list[Downloads]
         """
         sql = """select * from downloads 
                 where r_id = ? 
+                and strftime('%s', d_date) >= strftime('%s', ?) 
                 and strftime('%s', d_date) <= strftime('%s', ?) 
-                order by d_date desc 
-                limit ?, ?"""
+                order by d_date asc"""
         _res = []
 
         def _map_cb(row):
@@ -70,5 +69,5 @@ class DownloadsDao:
             _obj.d_downloads = row["d_downloads"]  # t <- q
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [r_id, today, start, count], _map_cb)
+        self.ds.query_all_rows(sql, [r_id, start_date, end_date], _map_cb)
         return _res

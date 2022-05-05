@@ -11,7 +11,7 @@ import tkinter as tk
 
 from tkinter import messagebox
 
-from dateutil import parser
+from dateutil import parser, relativedelta
 from dotenv import dotenv_values
 
 from dal.data_store import DataStore
@@ -58,7 +58,9 @@ class MyApp:
         tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=0, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=1, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=2, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=3, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
+        self.by_month = False
         self.raw_stat = False
         self.release_info_file_path = None
         # center it last:
@@ -71,10 +73,17 @@ class MyApp:
         self.root.mainloop()
 
     def show_raw(self):
+        self.by_month = False
         self.raw_stat = True
         self.show_stat(False)
 
     def show_by_days(self):
+        self.by_month = False
+        self.raw_stat = False
+        self.show_stat(False)
+
+    def show_by_month(self):
+        self.by_month = True
         self.raw_stat = False
         self.show_stat(False)
 
@@ -94,7 +103,6 @@ class MyApp:
         r_name = f"{user}/{repo}/{tag_name}"
         # -------------------------------
         ds = DataStore()
-        ds.open()
         try:
             r_dao = ReleasesDao(ds)
             found = r_dao.find_by_name(r_name)
@@ -109,18 +117,9 @@ class MyApp:
             ds.close()
         return user, repo, tag_name
 
-    def prepare_chart_data(self):
-        ds = DataStore()
-        ds.open()
-        try:
-            d_dao = DownloadsDao(ds)
-            today = datetime.date.today()
-            today = f"{today}"
-            raw = d_dao.get_latest_ordered_by_date_desc(self.release_data.r_id, today, 0, self.REPORT_RANGE + 1)
-        finally:
-            ds.close()
-        raw = sorted(raw, key=lambda d: d.d_date)
-        by_days = deepcopy(raw)
+    @staticmethod
+    def calc_diff(raw: []):
+        by_diff = deepcopy(raw)
         for i in range(1, len(raw)):
             raw_curr = raw[i]
             raw_prev = raw[i - 1]
@@ -128,26 +127,62 @@ class MyApp:
                 diff = 0
             else:
                 diff = raw_curr.d_downloads - raw_prev.d_downloads
-            by_days[i].d_downloads = diff
-        return raw, by_days
+            by_diff[i].d_downloads = diff
+        return by_diff
 
-    def get_chart_data(self):
-        raw, by_days = self.prepare_chart_data()
-        raw_dict = {}
-        for di in raw:
-            raw_dict[di.d_date] = di
-        by_days_dict = {}
-        for di in by_days:
-            by_days_dict[di.d_date] = di
+    @staticmethod
+    def get_downloads_count(by_days_diff, curr_month_1st_day, curr_month_last_day):
+        res = 0
+        for d in by_days_diff:
+            f = "%Y-%m-%d"
+            dt = datetime.datetime.strptime(d.d_date, f).date()
+            if curr_month_1st_day <= dt <= curr_month_last_day:
+                res += d.d_downloads
+        return res
+
+    def get_month_by_month(self, d_dao):
         today = datetime.date.today()
         downloads_max = -1
         downloads_data = []
         sum_for_period = 0
-        for days_to_add in range(self.REPORT_RANGE):
-            dt = today - datetime.timedelta(days=days_to_add)
+        curr_month_1st_day = datetime.date(year=today.year, month=today.month, day=1)
+        first_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=self.REPORT_RANGE)
+        by_days_raw = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_month_1st_day}",
+                                                              f"{today}")
+        by_days_diff = self.calc_diff(by_days_raw)
+        for _ in range(0, self.REPORT_RANGE):
+            next_month_1st_day = curr_month_1st_day + relativedelta.relativedelta(months=1)
+            curr_month_last_day = next_month_1st_day - datetime.timedelta(days=1)
+            dt_downloads = self.get_downloads_count(by_days_diff, curr_month_1st_day, curr_month_last_day)
+            sum_for_period += dt_downloads
+            downloads_data.append((f"{curr_month_last_day}", dt_downloads))
+            if dt_downloads > downloads_max:
+                downloads_max = dt_downloads
+            curr_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=1)
+        downloads_data = sorted(downloads_data, reverse=False)
+        return downloads_data, downloads_max, sum_for_period
+
+    def get_day_by_day(self, d_dao):
+        today = datetime.date.today()
+        last_date = f"{today}"
+        first_date = today - datetime.timedelta(days=self.REPORT_RANGE + 1)
+        first_date = f"{first_date}"
+        raw = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, first_date, last_date)
+        diff = self.calc_diff(raw)
+        raw_dict = {}
+        for di in raw:
+            raw_dict[di.d_date] = di
+        by_diff_dict = {}
+        for di in diff:
+            by_diff_dict[di.d_date] = di
+        downloads_max = -1
+        downloads_data = []
+        sum_for_period = 0
+        for days_before in range(self.REPORT_RANGE):
+            dt = today - datetime.timedelta(days=days_before)
             dt = str(dt)
-            if dt in by_days_dict:
-                dt_downloads = by_days_dict[dt].d_downloads
+            if dt in by_diff_dict:
+                dt_downloads = by_diff_dict[dt].d_downloads
                 sum_for_period += dt_downloads
                 if self.raw_stat:
                     dt_downloads = raw_dict[dt].d_downloads
@@ -158,6 +193,17 @@ class MyApp:
             downloads_data.append((dt, dt_downloads))
         downloads_data = sorted(downloads_data, reverse=False)
         return downloads_data, downloads_max, sum_for_period
+
+    def get_chart_data(self):
+        ds = DataStore()
+        try:
+            d_dao = DownloadsDao(ds)
+            if self.by_month:
+                return self.get_month_by_month(d_dao)
+            else:
+                return self.get_day_by_day(d_dao)
+        finally:
+            ds.close()
 
     def build_chart(self):
         data, max_data_value, sum_for_period = self.get_chart_data()
@@ -172,7 +218,10 @@ class MyApp:
         self.canvas.delete("all")
         for x, y_tuple in enumerate(data):
             day, y = y_tuple
-            day = day.split("-")[2]
+            if self.by_month:
+                x_label = day.split("-")[1]
+            else:
+                x_label = day.split("-")[2]
             x0 = x * x_stretch + x * x_width + x_gap
             y0 = self.CHART_HEIGHT - (y * y_stretch + y_gap)
             x1 = x * x_stretch + x * x_width + x_width + x_gap
@@ -182,7 +231,7 @@ class MyApp:
             text_1 = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
             x_rect_offset = ((x1 - x0) / 2)
             self.center_align(text_1, x_rect_offset)
-            text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(day))
+            text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
             self.center_align(text_2, x_rect_offset)
         return sum_for_period
 
@@ -196,6 +245,8 @@ class MyApp:
 
     def update_ui(self, text):
         sum_for_period = self.build_chart()
+        if self.by_month:
+            return
         avg_for_period = round(sum_for_period / self.REPORT_RANGE, 1)
         if text:
             text += f"Past {self.REPORT_RANGE} days: {sum_for_period} downloads ({avg_for_period} a day)\n"
@@ -205,7 +256,6 @@ class MyApp:
         today = datetime.date.today()
         today = str(today)
         ds = DataStore()
-        ds.open()
         try:
             d_dao = DownloadsDao(ds)
             downloads_arr = d_dao.find_downloads(self.release_data.r_id, today)
