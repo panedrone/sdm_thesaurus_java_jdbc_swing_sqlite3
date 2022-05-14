@@ -3,13 +3,13 @@ import datetime
 
 import os
 import sys
-from copy import deepcopy
 from threading import Thread
 
 import requests
 import tkinter as tk
 
 from tkinter import messagebox
+from tkcalendar import DateEntry
 
 from dateutil import parser, relativedelta
 from dotenv import dotenv_values
@@ -55,10 +55,16 @@ class MyApp:
         self.canvas.pack()  # the same as fill=tk.BOTH
         buttons_panel = tk.PanedWindow(frame)
         buttons_panel.grid(column=1, row=1, pady=(pad, 0), sticky="E")
-        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=0, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=1, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=2, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=3, row=0, padx=(pad, 0))
+        self.count = tk.Label(buttons_panel, text="?")
+        self.count.grid(column=0, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=1, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=2, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=3, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="<", command=self.by_days_prev, bd=1).grid(column=4, row=0, padx=(pad, 0))
+        self.cal = DateEntry(buttons_panel, date_pattern='yyyy-mm-dd')
+        self.cal.grid(column=5, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text=">", command=self.by_days_next, bd=1).grid(column=6, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=7, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.by_month = False
         self.raw_stat = False
@@ -75,6 +81,16 @@ class MyApp:
     def show_raw(self):
         self.by_month = False
         self.raw_stat = True
+        self.show_stat(False)
+
+    def by_days_prev(self):
+        to_date = self.cal.get_date()
+        self.cal.set_date(to_date - datetime.timedelta(days=1))
+        self.show_stat(False)
+
+    def by_days_next(self):
+        to_date = self.cal.get_date()
+        self.cal.set_date(to_date + datetime.timedelta(days=1))
         self.show_stat(False)
 
     def show_by_days(self):
@@ -118,26 +134,30 @@ class MyApp:
         return user, repo, tag_name
 
     @staticmethod
-    def calc_diff(raw: []):
-        by_diff = deepcopy(raw)
-        for i in range(1, len(raw)):
-            raw_curr = raw[i]
-            raw_prev = raw[i - 1]
-            if raw_curr.d_downloads < raw_prev.d_downloads:
+    def calc_diff(db_raw: []):
+        res_raw = []
+        res_diff = []
+        for i in range(1, len(db_raw)):
+            raw_curr = db_raw[i]
+            raw_prev = db_raw[i - 1]
+            if raw_prev.d_downloads == 0:
+                diff = 0  # in case when no history before, consider no downloads this day
+            elif raw_curr.d_downloads < raw_prev.d_downloads:
                 diff = 0
             else:
                 diff = raw_curr.d_downloads - raw_prev.d_downloads
-            by_diff[i].d_downloads = diff
-        return by_diff
+            res_diff.append((raw_curr.d_date, diff))
+            res_raw.append((raw_curr.d_date, raw_curr.d_downloads))
+        return res_diff, res_raw
 
     @staticmethod
     def get_downloads_count(by_days_diff, curr_month_1st_day, curr_month_last_day):
         res = 0
         for d in by_days_diff:
             f = "%Y-%m-%d"
-            dt = datetime.datetime.strptime(d.d_date, f).date()
+            dt = datetime.datetime.strptime(d[0], f).date()
             if curr_month_1st_day <= dt <= curr_month_last_day:
-                res += d.d_downloads
+                res += d[1]
         return res
 
     def get_month_by_month(self, d_dao):
@@ -146,10 +166,10 @@ class MyApp:
         downloads_data = []
         sum_for_period = 0
         curr_month_1st_day = datetime.date(year=today.year, month=today.month, day=1)
-        first_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=self.REPORT_RANGE)
-        by_days_raw = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_month_1st_day}",
-                                                              f"{today}")
-        by_days_diff = self.calc_diff(by_days_raw)
+        first_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=self.REPORT_RANGE + 1)
+        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_month_1st_day}",
+                                                                 f"{today}")
+        by_days_diff, by_days_raw = self.calc_diff(db_raw_by_days)
         for _ in range(0, self.REPORT_RANGE):
             next_month_1st_day = curr_month_1st_day + relativedelta.relativedelta(months=1)
             curr_month_last_day = next_month_1st_day - datetime.timedelta(days=1)
@@ -160,48 +180,53 @@ class MyApp:
                 downloads_max = dt_downloads
             curr_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=1)
         downloads_data = sorted(downloads_data, reverse=False)
+        self.count.config(text=str(sum_for_period))
         return downloads_data, downloads_max, sum_for_period
 
     def get_day_by_day(self, d_dao):
-        today = datetime.date.today()
-        last_date = f"{today}"
-        first_date = today - datetime.timedelta(days=self.REPORT_RANGE + 1)
+        # today = datetime.date.today()
+        to_date = self.cal.get_date()
+        last_date = f"{to_date}"
+        first_date = to_date - datetime.timedelta(days=self.REPORT_RANGE * 2)
         first_date = f"{first_date}"
-        raw = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, first_date, last_date)
-        diff = self.calc_diff(raw)
+        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, first_date, last_date)
+        diff, raw = self.calc_diff(db_raw_by_days)
         raw_dict = {}
         for di in raw:
-            raw_dict[di.d_date] = di
+            d_date = di[0]
+            raw_dict[d_date] = di
         by_diff_dict = {}
         for di in diff:
-            by_diff_dict[di.d_date] = di
+            d_date = di[0]
+            by_diff_dict[d_date] = di
         downloads_max = -1
         downloads_data = []
         sum_for_period = 0
         for days_before in range(self.REPORT_RANGE):
-            dt = today - datetime.timedelta(days=days_before)
+            dt = to_date - datetime.timedelta(days=days_before)
             dt = str(dt)
             if dt in by_diff_dict:
-                dt_downloads = by_diff_dict[dt].d_downloads
+                dt_downloads = by_diff_dict[dt][1]
                 sum_for_period += dt_downloads
                 if self.raw_stat:
-                    dt_downloads = raw_dict[dt].d_downloads
+                    dt_downloads = raw_dict[dt][1]
             else:
                 dt_downloads = 0
             if dt_downloads > downloads_max:
                 downloads_max = dt_downloads
             downloads_data.append((dt, dt_downloads))
         downloads_data = sorted(downloads_data, reverse=False)
+        self.count.config(text=str(sum_for_period))
         return downloads_data, downloads_max, sum_for_period
 
     def get_chart_data(self):
         ds = DataStore()
         try:
-            d_dao = DownloadsDao(ds)
+            dao = DownloadsDao(ds)
             if self.by_month:
-                return self.get_month_by_month(d_dao)
+                return self.get_month_by_month(dao)
             else:
-                return self.get_day_by_day(d_dao)
+                return self.get_day_by_day(dao)
         finally:
             ds.close()
 
@@ -231,7 +256,10 @@ class MyApp:
             text_1 = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
             x_rect_offset = ((x1 - x0) / 2)
             self.center_align(text_1, x_rect_offset)
-            text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
+            if x_label == '01':
+                text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label), fill='red')
+            else:
+                text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
             self.center_align(text_2, x_rect_offset)
         return sum_for_period
 
