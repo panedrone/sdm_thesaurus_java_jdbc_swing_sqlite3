@@ -57,14 +57,15 @@ class MyApp:
         buttons_panel.grid(column=1, row=1, pady=(pad, 0), sticky="E")
         self.count = tk.Label(buttons_panel, text="?")
         self.count.grid(column=0, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="Update", command=self.show_stat2, bd=1).grid(column=1, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Update", command=self.update_and_show_stat, bd=1).grid(column=1, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=2, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=3, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="<", command=self.by_days_prev, bd=1).grid(column=4, row=0, padx=(pad, 0))
         self.cal = DateEntry(buttons_panel, date_pattern='yyyy-mm-dd')
-        self.cal.grid(column=5, row=0, padx=(pad, 0))
+        self.cal.grid(column=4, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="<", command=self.by_days_prev, bd=1).grid(column=5, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text=">", command=self.by_days_next, bd=1).grid(column=6, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=7, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="t", command=self.by_days, bd=1).grid(column=7, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=8, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.by_month = False
         self.raw_stat = False
@@ -93,6 +94,11 @@ class MyApp:
         self.cal.set_date(to_date + datetime.timedelta(days=1))
         self.show_stat(False)
 
+    def by_days(self):
+        today = datetime.date.today()
+        self.cal.set_date(today)
+        self.show_stat(False)
+
     def show_by_days(self):
         self.by_month = False
         self.raw_stat = False
@@ -103,7 +109,7 @@ class MyApp:
         self.raw_stat = False
         self.show_stat(False)
 
-    def show_stat2(self):
+    def update_and_show_stat(self):
         self.show_stat(True)
 
     def load_settings_and_data(self):
@@ -151,12 +157,27 @@ class MyApp:
         return res_diff, res_raw
 
     @staticmethod
+    def calc_diff_2(raw: []):
+        res_raw = []
+        res_diff = []
+        for i in range(1, len(raw)):
+            raw_curr = raw[i]
+            raw_prev = raw[i - 1]
+            if raw_prev[1] == 0:
+                diff = 0  # in case when no history before, consider no downloads this day
+            elif raw_curr[1] < raw_prev[1]:
+                diff = 0
+            else:
+                diff = raw_curr[1] - raw_prev[1]
+            res_diff.append((raw_curr[0], diff))
+            res_raw.append((raw_curr[0], raw_curr[1]))
+        return res_diff, res_raw
+
+    @staticmethod
     def get_downloads_count(by_days_diff, curr_month_1st_day, curr_month_last_day):
         res = 0
         for d in by_days_diff:
-            f = "%Y-%m-%d"
-            dt = datetime.datetime.strptime(d[0], f).date()
-            if curr_month_1st_day <= dt <= curr_month_last_day:
+            if curr_month_1st_day <= d[0] <= curr_month_last_day:
                 res += d[1]
         return res
 
@@ -169,13 +190,14 @@ class MyApp:
         first_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=self.REPORT_RANGE + 1)
         db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_month_1st_day}",
                                                                  f"{today}")
-        by_days_diff, by_days_raw = self.calc_diff(db_raw_by_days)
+        raw_by_days = self.get_raw_by_days(db_raw_by_days, first_month_1st_day, today)
+        by_days_diff, by_days_raw = self.calc_diff_2(raw_by_days)
         for _ in range(0, self.REPORT_RANGE):
             next_month_1st_day = curr_month_1st_day + relativedelta.relativedelta(months=1)
             curr_month_last_day = next_month_1st_day - datetime.timedelta(days=1)
             dt_downloads = self.get_downloads_count(by_days_diff, curr_month_1st_day, curr_month_last_day)
             sum_for_period += dt_downloads
-            downloads_data.append((f"{curr_month_last_day}", dt_downloads))
+            downloads_data.append((curr_month_last_day, dt_downloads))
             if dt_downloads > downloads_max:
                 downloads_max = dt_downloads
             curr_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=1)
@@ -183,33 +205,50 @@ class MyApp:
         self.count.config(text=str(sum_for_period))
         return downloads_data, downloads_max, sum_for_period
 
+    @staticmethod
+    def get_raw_by_days(raw: [], start_date, end_date):
+        raw_dict = {}
+        for di in raw:
+            raw_dict[di.d_date] = di
+        res = []
+        dt = start_date
+        while dt <= end_date:
+            # f = "%Y-%m-%d"
+            # dt = datetime.datetime.strptime(d[0], f).date()
+            dts = dt.strftime("%Y-%m-%d")
+            di = raw_dict.get(dts)
+            if di:
+                res.append((dt, di.d_downloads))
+            else:
+                res.append((dt, 0))
+            dt = dt + datetime.timedelta(days=1)
+        return res
+
     def get_day_by_day(self, d_dao):
-        # today = datetime.date.today()
-        to_date = self.cal.get_date()
-        last_date = f"{to_date}"
-        first_date = to_date - datetime.timedelta(days=self.REPORT_RANGE * 2)
-        first_date = f"{first_date}"
-        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, first_date, last_date)
-        diff, raw = self.calc_diff(db_raw_by_days)
+        last_date = self.cal.get_date()
+        first_date = last_date - datetime.timedelta(days=self.REPORT_RANGE * 2)
+        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_date}", f"{last_date}")
+        raw_by_days = self.get_raw_by_days(db_raw_by_days, first_date, last_date)
+        diff, raw = self.calc_diff_2(raw_by_days)
         raw_dict = {}
         for di in raw:
             d_date = di[0]
             raw_dict[d_date] = di
-        by_diff_dict = {}
+        diff_dict = {}
         for di in diff:
             d_date = di[0]
-            by_diff_dict[d_date] = di
+            diff_dict[d_date] = di
         downloads_max = -1
         downloads_data = []
         sum_for_period = 0
         for days_before in range(self.REPORT_RANGE):
-            dt = to_date - datetime.timedelta(days=days_before)
-            dt = str(dt)
-            if dt in by_diff_dict:
-                dt_downloads = by_diff_dict[dt][1]
-                sum_for_period += dt_downloads
+            dt = last_date - datetime.timedelta(days=days_before)
+            if dt in diff_dict:
+                sum_for_period += diff_dict[dt][1]  # SUM always by diff
                 if self.raw_stat:
                     dt_downloads = raw_dict[dt][1]
+                else:
+                    dt_downloads = diff_dict[dt][1]
             else:
                 dt_downloads = 0
             if dt_downloads > downloads_max:
@@ -242,11 +281,11 @@ class MyApp:
         x_gap = 10
         self.canvas.delete("all")
         for x, y_tuple in enumerate(data):
-            day, y = y_tuple
+            dt, y = y_tuple
             if self.by_month:
-                x_label = day.split("-")[1]
+                x_label = str(dt.month) # .split("-")[1]
             else:
-                x_label = day.split("-")[2]
+                x_label = str(dt.day) # split("-")[2]
             x0 = x * x_stretch + x * x_width + x_gap
             y0 = self.CHART_HEIGHT - (y * y_stretch + y_gap)
             x1 = x * x_stretch + x * x_width + x_width + x_gap
@@ -256,7 +295,7 @@ class MyApp:
             text_1 = self.canvas.create_text(x0, y0, anchor="nw", text=str(y))
             x_rect_offset = ((x1 - x0) / 2)
             self.center_align(text_1, x_rect_offset)
-            if x_label == '01':
+            if x_label == '1':
                 text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label), fill='red')
             else:
                 text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
