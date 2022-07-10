@@ -19,9 +19,9 @@ class ReleasesDao:
         @rtype: None
         @raise: Exception if no rows inserted.
         """
-        sql = """insert into releases (r_name) values (?)"""
+        _sql = """insert into releases (r_name) values (?)"""
         _ai_values = [["r_id", None]]
-        self.ds.insert_row(sql, [p.r_name], _ai_values)
+        self.ds.insert_row(_sql, [p.r_name], _ai_values)
         p.r_id = _ai_values[0][1]
 
     def find_by_name(self, r_name):
@@ -29,7 +29,7 @@ class ReleasesDao:
         @type r_name: str
         @rtype: list[ReleaseData]
         """
-        sql = """select * from releases 
+        _sql = """select * from releases 
                 where r_name = ?"""
         _res = []
 
@@ -39,5 +39,5 @@ class ReleasesDao:
             _obj.r_name = row["r_name"]  # t <- q
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [r_name], _map_cb)
+        self.ds.query_all_rows(_sql, [r_name], _map_cb)
         return _res

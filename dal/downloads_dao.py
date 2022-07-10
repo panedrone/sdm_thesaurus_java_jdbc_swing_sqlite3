@@ -17,8 +17,8 @@ class DownloadsDao:
         @type p: Downloads
         @rtype: int (the number of affected rows)
         """
-        sql = """insert into downloads (r_id, d_date, d_downloads) values (?, ?, ?)"""
-        return self.ds.exec_dml(sql, [p.r_id, p.d_date, p.d_downloads])
+        _sql = """insert into downloads (r_id, d_date, d_downloads) values (?, ?, ?)"""
+        return self.ds.exec_dml(_sql, [p.r_id, p.d_date, p.d_downloads])
 
     def update_download(self, p):
         """
@@ -26,8 +26,8 @@ class DownloadsDao:
         @type p: Downloads
         @rtype: int (the number of affected rows)
         """
-        sql = """update downloads set d_downloads=? where r_id=? and d_date=?"""
-        return self.ds.exec_dml(sql, [p.d_downloads, p.r_id, p.d_date])
+        _sql = """update downloads set d_downloads=? where r_id=? and d_date=?"""
+        return self.ds.exec_dml(_sql, [p.d_downloads, p.r_id, p.d_date])
 
     def find_downloads(self, r_id, d_date):
         """
@@ -35,7 +35,7 @@ class DownloadsDao:
         @type d_date: str
         @rtype: list[Downloads]
         """
-        sql = """select * from downloads where r_id=? and d_date=?"""
+        _sql = """select * from downloads where r_id=? and d_date=?"""
         _res = []
 
         def _map_cb(row):
@@ -45,17 +45,17 @@ class DownloadsDao:
             _obj.d_downloads = row["d_downloads"]  # t <- t
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [r_id, d_date], _map_cb)
+        self.ds.query_all_rows(_sql, [r_id, d_date], _map_cb)
         return _res
 
-    def get_downloads_ordered_by_date_asc(self, r_id, start_date, end_date):
+    def get_downloads_ordered_by_date_asc(self, r_id, date_begin, date_end):
         """
         @type r_id: int
-        @type start_date: str
-        @type end_date: str
+        @type date_begin: str
+        @type date_end: str
         @rtype: list[Downloads]
         """
-        sql = """select * from downloads 
+        _sql = """select * from downloads 
                 where r_id = ? 
                 and strftime('%s', d_date) >= strftime('%s', ?) 
                 and strftime('%s', d_date) <= strftime('%s', ?) 
@@ -69,5 +69,5 @@ class DownloadsDao:
             _obj.d_downloads = row["d_downloads"]  # t <- q
             _res.append(_obj)
 
-        self.ds.query_all_rows(sql, [r_id, start_date, end_date], _map_cb)
+        self.ds.query_all_rows(_sql, [r_id, date_begin, date_end], _map_cb)
         return _res
