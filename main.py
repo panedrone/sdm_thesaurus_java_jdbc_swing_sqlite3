@@ -57,7 +57,8 @@ class MyApp:
         buttons_panel.grid(column=1, row=1, pady=(pad, 0), sticky="E")
         self.count = tk.Label(buttons_panel, text="?")
         self.count.grid(column=0, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="Update", command=self.update_and_show_stat, bd=1).grid(column=1, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Update", command=self.update_and_show_stat, bd=1).grid(column=1, row=0,
+                                                                                              padx=(pad, 0))
         tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=2, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=3, row=0, padx=(pad, 0))
         self.cal = DateEntry(buttons_panel, date_pattern='yyyy-mm-dd')
@@ -140,24 +141,7 @@ class MyApp:
         return user, repo, tag_name
 
     @staticmethod
-    def calc_diff(db_raw: []):
-        res_raw = []
-        res_diff = []
-        for i in range(1, len(db_raw)):
-            raw_curr = db_raw[i]
-            raw_prev = db_raw[i - 1]
-            if raw_prev.d_downloads == 0:
-                diff = 0  # in case when no history before, consider no downloads this day
-            elif raw_curr.d_downloads < raw_prev.d_downloads:
-                diff = 0
-            else:
-                diff = raw_curr.d_downloads - raw_prev.d_downloads
-            res_diff.append((raw_curr.d_date, diff))
-            res_raw.append((raw_curr.d_date, raw_curr.d_downloads))
-        return res_diff, res_raw
-
-    @staticmethod
-    def calc_diff_2(raw: []):
+    def calc_diff(raw: []):
         res_raw = []
         res_diff = []
         for i in range(1, len(raw)):
@@ -181,17 +165,20 @@ class MyApp:
                 res += d[1]
         return res
 
+    def get_downloads(self, d_dao, date_begin, date_end):
+        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{date_begin}", f"{date_end}")
+        raw_by_days = self.get_raw_by_days(db_raw_by_days, date_begin, date_end)
+        by_days_diff, by_days_raw = self.calc_diff(raw_by_days)
+        return by_days_diff, by_days_raw
+
     def get_month_by_month(self, d_dao):
         today = datetime.date.today()
         downloads_max = -1
         downloads_data = []
         sum_for_period = 0
         curr_month_1st_day = datetime.date(year=today.year, month=today.month, day=1)
-        first_month_1st_day = curr_month_1st_day - relativedelta.relativedelta(months=self.REPORT_RANGE + 1)
-        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_month_1st_day}",
-                                                                 f"{today}")
-        raw_by_days = self.get_raw_by_days(db_raw_by_days, first_month_1st_day, today)
-        by_days_diff, by_days_raw = self.calc_diff_2(raw_by_days)
+        date_begin = curr_month_1st_day - relativedelta.relativedelta(months=36)
+        by_days_diff, by_days_raw = self.get_downloads(d_dao, date_begin, today)
         for _ in range(0, self.REPORT_RANGE):
             next_month_1st_day = curr_month_1st_day + relativedelta.relativedelta(months=1)
             curr_month_last_day = next_month_1st_day - datetime.timedelta(days=1)
@@ -212,6 +199,7 @@ class MyApp:
             raw_dict[di.d_date] = di
         res = []
         dt = start_date
+        last_not_zero = 0
         while dt <= end_date:
             # f = "%Y-%m-%d"
             # dt = datetime.datetime.strptime(d[0], f).date()
@@ -219,30 +207,29 @@ class MyApp:
             di = raw_dict.get(dts)
             if di:
                 res.append((dt, di.d_downloads))
+                last_not_zero = di.d_downloads
             else:
-                res.append((dt, 0))
+                res.append((dt, last_not_zero))
             dt = dt + datetime.timedelta(days=1)
         return res
 
     def get_day_by_day(self, d_dao):
-        last_date = self.cal.get_date()
-        first_date = last_date - datetime.timedelta(days=self.REPORT_RANGE * 2)
-        db_raw_by_days = d_dao.get_downloads_ordered_by_date_asc(self.release_data.r_id, f"{first_date}", f"{last_date}")
-        raw_by_days = self.get_raw_by_days(db_raw_by_days, first_date, last_date)
-        diff, raw = self.calc_diff_2(raw_by_days)
+        date_end = self.cal.get_date()
+        date_begin = date_end - relativedelta.relativedelta(months=12)
+        by_days_diff, by_days_raw = self.get_downloads(d_dao, date_begin, date_end)
         raw_dict = {}
-        for di in raw:
+        for di in by_days_raw:
             d_date = di[0]
             raw_dict[d_date] = di
         diff_dict = {}
-        for di in diff:
+        for di in by_days_diff:
             d_date = di[0]
             diff_dict[d_date] = di
         downloads_max = -1
         downloads_data = []
         sum_for_period = 0
         for days_before in range(self.REPORT_RANGE):
-            dt = last_date - datetime.timedelta(days=days_before)
+            dt = date_end - datetime.timedelta(days=days_before)
             if dt in diff_dict:
                 sum_for_period += diff_dict[dt][1]  # SUM always by diff
                 if self.raw_stat:
@@ -283,9 +270,9 @@ class MyApp:
         for x, y_tuple in enumerate(data):
             dt, y = y_tuple
             if self.by_month:
-                x_label = str(dt.month) # .split("-")[1]
+                x_label = str(dt.month)  # .split("-")[1]
             else:
-                x_label = str(dt.day) # split("-")[2]
+                x_label = str(dt.day)  # split("-")[2]
             x0 = x * x_stretch + x * x_width + x_gap
             y0 = self.CHART_HEIGHT - (y * y_stretch + y_gap)
             x1 = x * x_stretch + x * x_width + x_width + x_gap
