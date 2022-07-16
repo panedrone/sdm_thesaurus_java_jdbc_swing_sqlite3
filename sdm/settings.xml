@@ -4,7 +4,7 @@
 
     <folders target="dal" sql="sdm/sql"/>
 
-    <dto scope="" inheritance="" field-names-mode="0" single-file="" macro="render"/>
+    <dto scope="" inheritance="" field-names-mode="0" macro="render"/>
 
     <dao scope="" macro="render"/>
 
