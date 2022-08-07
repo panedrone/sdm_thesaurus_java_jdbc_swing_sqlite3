@@ -75,13 +75,13 @@ http://sqldalmaker.sourceforge.net
 class $class_name:
     """
 #foreach($f in $fields)
-    @type $f.getName(): $f.getType() | None
+    @type $f.Name: $f.Type | None
 #end
     """
 
     def __init__(self):
 #foreach($f in $fields)
-        self.$f.getName() = None  # $f.getComment()
+        self.$f.Name = None  # $f.Comment
 #end
 ## ====================================================================================================================
 #elseif($mode=="dao_class")

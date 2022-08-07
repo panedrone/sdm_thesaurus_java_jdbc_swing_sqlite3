@@ -37,6 +37,35 @@ class OutParam:
 
 
 class DataStore:
+
+    def begin(self): pass
+
+    def commit(self): pass
+
+    def rollback(self): pass
+
+    # helpers
+
+    def get_one(self, cls, params=None): pass
+
+    def get_all(self, cls, params=None) -> []: pass
+
+    # the methods called by generated dao classes
+
+    def insert_row(self, sql, params, ai_values): pass
+
+    def exec_dml(self, sql, params): pass
+
+    def query_scalar(self, sql, params): pass
+
+    def query_all_scalars(self, sql, params) -> []: pass
+
+    def query_row(self, sql, params): pass
+
+    def query_all_rows(self, sql, params, callback) -> []: pass
+
+
+class _DS(DataStore):
     """
         SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
         This is an example of how to implement DataStore in Python + sqlite3/psycopg2/mysql/django.db -->
@@ -90,22 +119,20 @@ class DataStore:
     #     #     raise Exception('Unexpected: ' + engine)
     #     # self.conn = con
 
-    def close(self):
-        if self.conn:
-            self.conn.close()
-            self.conn = None
+    # def close(self):
+    #     if self.conn:
+    #         self.conn.close()
+    #         self.conn = None
 
-    @staticmethod
-    def get_all(cls, params=None) -> []:
+    def get_all(self, cls, params=None) -> []:
         if not params:
             params = ()
         raw_query_set = cls.objects.raw(cls.SQL, params)
         res = [r for r in raw_query_set]
         return res
 
-    @staticmethod
-    def get_one(cls, params=None):
-        rows = DataStore.get_all(cls, params)
+    def get_one(self, cls, params=None):
+        rows = self.get_all(cls, params)
         if len(rows) == 0:
             raise Exception('No rows')
         if len(rows) > 1:
@@ -400,3 +427,10 @@ class DataStore:
         for i in range(len(params)):
             if isinstance(params[i], OutParam):
                 params[i].value = result_args[i]
+
+
+_ds = _DS()
+
+
+def ds() -> DataStore:
+    return _ds

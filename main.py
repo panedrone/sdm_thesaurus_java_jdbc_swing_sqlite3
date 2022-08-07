@@ -3,7 +3,7 @@ import datetime
 
 import os
 import sys
-from threading import Thread
+# from threading import Thread
 
 import requests
 import tkinter as tk
@@ -14,7 +14,7 @@ from tkcalendar import DateEntry
 from dateutil import parser, relativedelta
 from dotenv import dotenv_values
 
-from dal.data_store import DataStore
+from dal.data_store import ds
 from dal.downloads import Downloads
 from dal.downloads_dao import DownloadsDao
 from dal.release_data import ReleaseData
@@ -60,13 +60,14 @@ class MyApp:
         tk.Button(buttons_panel, text="Update", command=self.update_and_show_stat, bd=1).grid(column=1, row=0,
                                                                                               padx=(pad, 0))
         tk.Button(buttons_panel, text="Raw", command=self.show_raw, bd=1).grid(column=2, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Days", command=self.show_by_days, bd=1).grid(column=3, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="Past 30 days", command=self.show_by_days, bd=1).grid(column=3, row=0,
+                                                                                            padx=(pad, 0))
         self.cal = DateEntry(buttons_panel, date_pattern='yyyy-mm-dd')
         self.cal.grid(column=4, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="<", command=self.by_days_prev, bd=1).grid(column=5, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text=">", command=self.by_days_next, bd=1).grid(column=6, row=0, padx=(pad, 0))
         tk.Button(buttons_panel, text="t", command=self.by_days, bd=1).grid(column=7, row=0, padx=(pad, 0))
-        tk.Button(buttons_panel, text="By Month", command=self.show_by_month, bd=1).grid(column=8, row=0, padx=(pad, 0))
+        tk.Button(buttons_panel, text="By month", command=self.show_by_month, bd=1).grid(column=8, row=0, padx=(pad, 0))
         self.release_data = ReleaseData()
         self.by_month = False
         self.raw_stat = False
@@ -75,9 +76,9 @@ class MyApp:
         self.root.eval('tk::PlaceWindow . center')
 
     def run(self):
-        # self.show_stat(False)
-        thr = Thread(target=self.show_stat, args=(False,))
-        thr.start()
+        self.show_stat(False)
+        # thr = Thread(target=self.show_stat, args=(False,))
+        # thr.start()
         self.root.mainloop()
 
     def show_raw(self):
@@ -125,19 +126,15 @@ class MyApp:
         tag_name = values.get("TAG")
         r_name = f"{user}/{repo}/{tag_name}"
         # -------------------------------
-        ds = DataStore()
-        try:
-            r_dao = ReleasesDao(ds)
-            found = r_dao.find_by_name(r_name)
-            if len(found) == 0:
-                self.release_data = ReleaseData()
-                self.release_data.r_name = r_name
-                r_dao.create_release(self.release_data)
-                ds.commit()
-            else:
-                self.release_data = found[0]
-        finally:
-            ds.close()
+        r_dao = ReleasesDao(ds())
+        found = r_dao.find_by_name(r_name)
+        if len(found) == 0:
+            self.release_data = ReleaseData()
+            self.release_data.r_name = r_name
+            r_dao.create_release(self.release_data)
+            ds().commit()
+        else:
+            self.release_data = found[0]
         return user, repo, tag_name
 
     @staticmethod
@@ -246,15 +243,11 @@ class MyApp:
         return downloads_data, downloads_max, sum_for_period
 
     def get_chart_data(self):
-        ds = DataStore()
-        try:
-            dao = DownloadsDao(ds)
-            if self.by_month:
-                return self.get_month_by_month(dao)
-            else:
-                return self.get_day_by_day(dao)
-        finally:
-            ds.close()
+        dao = DownloadsDao(ds())
+        if self.by_month:
+            return self.get_month_by_month(dao)
+        else:
+            return self.get_day_by_day(dao)
 
     def build_chart(self):
         data, max_data_value, sum_for_period = self.get_chart_data()
@@ -309,24 +302,20 @@ class MyApp:
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
         today = str(today)
-        ds = DataStore()
-        try:
-            d_dao = DownloadsDao(ds)
-            downloads_arr = d_dao.find_downloads(self.release_data.r_id, today)
-            if len(downloads_arr) == 0:
-                di = Downloads()
-                di.r_id = self.release_data.r_id
-                di.d_date = today
-                di.d_downloads = release_downloads_count
-                d_dao.create_download(di)
-                ds.commit()
-            else:
-                if downloads_arr[0].d_downloads != release_downloads_count:
-                    downloads_arr[0].d_downloads = release_downloads_count
-                    d_dao.update_download(downloads_arr[0])
-                    ds.commit()
-        finally:
-            ds.close()
+        d_dao = DownloadsDao(ds())
+        downloads_arr = d_dao.find_downloads(self.release_data.r_id, today)
+        if len(downloads_arr) == 0:
+            di = Downloads()
+            di.r_id = self.release_data.r_id
+            di.d_date = today
+            di.d_downloads = release_downloads_count
+            d_dao.create_download(di)
+            ds().commit()
+        else:
+            if downloads_arr[0].d_downloads != release_downloads_count:
+                downloads_arr[0].d_downloads = release_downloads_count
+                d_dao.update_download(downloads_arr[0])
+                ds().commit()
 
     @staticmethod
     def get_release_header(release):
