@@ -6,9 +6,7 @@
 
     <dto scope="" inheritance="" field-names-mode="0" macro="render"/>
 
-    <dao scope="" macro="render"/>
-
-    <external-vm-file path=""/>
+    <dao scope="" field-assign-mode="0" macro="render"/>
 
     <ide event-log="true"/>
 
