@@ -1,15 +1,33 @@
+"""
+    SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
+    This is an example of how to implement DataStore in Python + sqlite3/psycopg2/mysql/django.db -->
+    Executing custom SQL directly https://docs.djangoproject.com/en/3.2/topics/db/sql/
+    Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store.py
+
+    Copy-paste this code to your project and change it for your needs.
+
+    Successfully tested in django projects:
+    - 'django.db.backends.sqlite3' ---------------- built-in
+    - 'django.db.backends.postgresql_psycopg2' ---- pip install psycopg2
+    - 'mysql.connector.django' -------------------- pip install mysql-connector-python
+       ^^ instead of built-in 'django.db.backends.mysql' to enable cursor.stored_results().
+       MySQL SP returning result-sets --> http://www.mysqltutorial.org/calling-mysql-stored-procedures-python/
+       MySQL Connector/Python as Django Engine? -->
+       https://stackoverflow.com/questions/26573984/django-how-to-install-mysql-connector-python-with-pip3)
+    - 'django.db.backends.oracle' ------------------pip install cx_oracle
+
+    Improvements are welcome: sqldalmaker@gmail.com
+"""
+
 # uncomment one of the imports below to use without django.db
 
 import sqlite3
-
-
 # import psycopg2
 # import mysql.connector
+# import cx_oracle
 
-# uncomment the code below to use with django.db:
+# uncomment the imports and code below to use with django.db:
 
-# import os
-#
 # import django.db
 # from django.apps import AppConfig
 # from django.db import transaction
@@ -17,18 +35,18 @@ import sqlite3
 #
 #
 # class MyDjangoAppConfig(AppConfig):
-#     # default_auto_field = 'django.db.models.BigAutoField'
-#     default_auto_field = 'django.db.models.AutoField'
-#     name = 'dal'  # python package containing generated django models
-#
-#
+#     default_auto_field = 'django.db.models.BigAutoField'
+#     # default_auto_field = 'django.db.models.AutoField'
+#     name = 'dal'  # ----------- python package containing generated django models
+
+
 # # there should be "settings.py" in the project root
 # # Google --> django settings.py location
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-#
-# # django.setup() should be called before importing/using generated django models -->
-# # AppRegistryNotReady("Apps aren't loaded yet.")
-# django.setup()
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings') # call it in __main__
+
+# django.setup() should be called before importing/using generated django models -->
+# AppRegistryNotReady("Apps aren't loaded yet.")
+# django.setup() # ----------- call it before calling of factory create_ds() -> DataStore:
 
 
 class OutParam:
@@ -44,11 +62,29 @@ class DataStore:
 
     def rollback(self): pass
 
-    # helpers
+    # raw-SQL
 
-    def get_one(self, cls, params=None): pass
+    def get_one_raw(self, cls, params=None): pass
 
-    def get_all(self, cls, params=None) -> []: pass
+    def get_all_raw(self, cls, params=None) -> []: pass
+
+    # ORM helpers
+
+    def filter(self, cls, params=None): pass
+
+    def delete_by_filter(self, cls, params=None) -> int: pass
+
+    # ORM-based CRUD
+
+    def create_one(self, serializer): pass
+
+    def read_all(self, cls) -> []: pass
+
+    def read_one(self, cls, params=None): pass
+
+    def update_one(self, serializer): pass
+
+    def delete_one(self, cls, params=None) -> int: pass
 
     # the methods called by generated dao classes
 
@@ -65,37 +101,26 @@ class DataStore:
     def query_all_rows(self, sql, params, callback) -> []: pass
 
 
-class _DS(DataStore):
-    """
-        SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
-        This is an example of how to implement DataStore in Python + sqlite3/psycopg2/mysql/django.db -->
-        Executing custom SQL directly https://docs.djangoproject.com/en/3.2/topics/db/sql/
-        Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store.py
-        Copy-paste this code to your project and change it for your needs.
-        Improvements are welcome: sqldalmaker@gmail.com
-        Successfully tested in django projects:
-        - 'django.db.backends.sqlite3' ---------------- built-in
-        - 'django.db.backends.postgresql_psycopg2' ---- pip install psycopg2
-        - 'mysql.connector.django' -------------------- pip install mysql-connector-python
-           ^^ instead of built-in 'django.db.backends.mysql' to enable cursor.stored_results().
-           MySQL SP returning result-sets --> http://www.mysqltutorial.org/calling-mysql-stored-procedures-python/
-           MySQL Connector/Python as Django Engine? -->
-           https://stackoverflow.com/questions/26573984/django-how-to-install-mysql-connector-python-with-pip3)
-    """
+def create_ds() -> DataStore:
+    return _DS()
 
+
+class _DS(DataStore):
     class EngineType:
         sqlite3 = 1
         mysql = 2
         postgresql = 3
+        oracle = 4
 
     def __init__(self):
-        self.conn = None
         self.conn = sqlite3.connect('my-github.sqlite3')
         self.engine_type = self.EngineType.sqlite3
 
     # def open(self):
     #     # uncomment to use without django.db:
     #
+    #     # self.conn = sqlite3.connect('./task-tracker.sqlite')
+    #     # self.engine_type = self.EngineType.sqlite3
     #
     #     # self.conn = mysql.connector.Connect(user='root', password='root', host='127.0.0.1', database='sakila')
     #     # self.engine_type = self.EngineType.mysql
@@ -107,67 +132,98 @@ class _DS(DataStore):
     #
     #     # uncomment to use with django.db:
     #
-    #     # con = django.db.connections['default']
-    #     # engine = con.settings_dict["ENGINE"]
-    #     # if 'sqlite3' in engine:
-    #     #     self.engine_type = self.EngineType.sqlite3
-    #     # elif 'mysql' in engine:
-    #     #     self.engine_type = self.EngineType.mysql
-    #     # elif 'postgresql' in engine:
-    #     #     self.engine_type = self.EngineType.postgresql
-    #     # else:
-    #     #     raise Exception('Unexpected: ' + engine)
-    #     # self.conn = con
+    #     con = django.db.connections['default']
+    #     engine = con.settings_dict["ENGINE"]
+    #     if 'sqlite3' in engine:
+    #         self.engine_type = self.EngineType.sqlite3
+    #     elif 'mysql' in engine:
+    #         self.engine_type = self.EngineType.mysql
+    #     elif 'postgresql' in engine:
+    #         self.engine_type = self.EngineType.postgresql
+    #     elif 'oracle' in engine:
+    #         self.engine_type = self.EngineType.oracle
+    #     else:
+    #         raise Exception('Unexpected: ' + engine)
+    #     self.conn = con
 
-    # def close(self):
-    #     if self.conn:
-    #         self.conn.close()
-    #         self.conn = None
+    def close(self):
+        if self.conn:
+            self.conn.close()
+            self.conn = None
 
-    def get_all(self, cls, params=None) -> []:
+    # raw-SQL
+
+    def get_all_raw(self, cls, params=None) -> []:
         if not params:
             params = ()
         raw_query_set = cls.objects.raw(cls.SQL, params)
         res = [r for r in raw_query_set]
         return res
 
-    def get_one(self, cls, params=None):
-        rows = self.get_all(cls, params)
+    def get_one_raw(self, cls, params=None):
+        rows = self.get_all_raw(cls, params)
         if len(rows) == 0:
             raise Exception('No rows')
         if len(rows) > 1:
             raise Exception('More than 1 row exists')
         return rows[0]
 
+    # ORM helpers
+
+    def filter(self, cls, params=None):
+        return cls.objects.filter(**params)
+
+    def delete_by_filter(self, cls, params=None) -> int:
+        queryset = self.filter(cls, params)
+        res_tuple = queryset.delete()  # (1, {'dal.Group': 1})
+        return res_tuple[0]
+
+    # CRUD
+
+    def create_one(self, serializer):
+        serializer.save()
+
+    def read_all(self, cls) -> []:
+        return cls.objects.all()
+
+    def read_one(self, cls, params=None):
+        return cls.objects.get(**params)
+
+    def update_one(self, serializer):
+        serializer.save()
+
+    def delete_one(self, cls, params=None) -> int:
+        # queryset = self.read_one(cls, params) # it returns an entity -> fetching
+        # queryset.delete()
+        rc = self.delete_by_filter(cls, params)  # no fetch!
+        return rc
+
     # uncomment to use without django.db:
 
     def begin(self):
         self.conn.execute('begin')  # sqlite3
-        # self.conn.start_transaction() # mysql
-        # self.conn.begin() # psycopg2
+        self.conn.start_transaction() # mysql
+        self.conn.begin() # psycopg2
 
     # uncomment to use without django.db:
     def commit(self):
         self.conn.execute('commit')  # sqlite3
-        # self.conn.commit() # psycopg2, mysql
+        self.conn.commit() # psycopg2, mysql
 
     # uncomment to use without django.db:
     def rollback(self):
         self.conn.execute("rollback")  # sqlite3
-        # self.conn.rollback() # psycopg2, mysql
+        self.conn.rollback() # psycopg2, mysql
 
-    # uncomment to use with django.db:
-
-    # @staticmethod
-    # def begin():
+    # # uncomment to use with django.db:
+    #
+    # def begin(self):
     #     django.db.transaction.set_autocommit(False)
     #
-    # @staticmethod
-    # def commit():
+    # def commit(self):
     #     django.db.transaction.commit()
     #
-    # @staticmethod
-    # def rollback():
+    # def rollback(self):
     #     django.db.transaction.rollback()
 
     def insert_row(self, sql, params, ai_values):
@@ -427,10 +483,3 @@ class _DS(DataStore):
         for i in range(len(params)):
             if isinstance(params[i], OutParam):
                 params[i].value = result_args[i]
-
-
-_ds = _DS()
-
-
-def ds() -> DataStore:
-    return _ds

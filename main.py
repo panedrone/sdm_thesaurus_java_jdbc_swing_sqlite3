@@ -14,7 +14,7 @@ from tkcalendar import DateEntry
 from dateutil import parser, relativedelta
 from dotenv import dotenv_values
 
-from dal.data_store import ds
+from dal.data_store import create_ds
 from dal.downloads import Downloads
 from dal.downloads_dao import DownloadsDao
 from dal.release_data import ReleaseData
@@ -39,6 +39,7 @@ class MyApp:
     REPORT_RANGE = 30
 
     def __init__(self):
+        self.ds = create_ds()
         # === panedrone: not needed:
         # root.geometry("600x300")
         self.root = tk.Tk()
@@ -126,13 +127,13 @@ class MyApp:
         tag_name = values.get("TAG")
         r_name = f"{user}/{repo}/{tag_name}"
         # -------------------------------
-        r_dao = ReleasesDao(ds())
+        r_dao = ReleasesDao(self.ds)
         found = r_dao.find_by_name(r_name)
         if len(found) == 0:
             self.release_data = ReleaseData()
             self.release_data.r_name = r_name
             r_dao.create_release(self.release_data)
-            ds().commit()
+            self.ds.commit()
         else:
             self.release_data = found[0]
         return user, repo, tag_name
@@ -243,7 +244,7 @@ class MyApp:
         return downloads_data, downloads_max, sum_for_period
 
     def get_chart_data(self):
-        dao = DownloadsDao(ds())
+        dao = DownloadsDao(self.ds)
         if self.by_month:
             return self.get_month_by_month(dao)
         else:
@@ -302,7 +303,7 @@ class MyApp:
     def update_db(self, release_downloads_count):
         today = datetime.date.today()
         today = str(today)
-        d_dao = DownloadsDao(ds())
+        d_dao = DownloadsDao(self.ds)
         downloads_arr = d_dao.find_downloads(self.release_data.r_id, today)
         if len(downloads_arr) == 0:
             di = Downloads()
@@ -310,12 +311,12 @@ class MyApp:
             di.d_date = today
             di.d_downloads = release_downloads_count
             d_dao.create_download(di)
-            ds().commit()
+            self.ds.commit()
         else:
             if downloads_arr[0].d_downloads != release_downloads_count:
                 downloads_arr[0].d_downloads = release_downloads_count
                 d_dao.update_download(downloads_arr[0])
-                ds().commit()
+                self.ds.commit()
 
     @staticmethod
     def get_release_header(release):
