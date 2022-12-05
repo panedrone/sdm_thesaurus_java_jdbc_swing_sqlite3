@@ -40,8 +40,6 @@ class MyApp:
 
     def __init__(self):
         self.ds = create_ds()
-        # === panedrone: not needed:
-        # root.geometry("600x300")
         self.root = tk.Tk()
         self.root.resizable(width=False, height=False)
         frame = tk.Frame(self.root)
@@ -77,6 +75,7 @@ class MyApp:
         self.root.eval('tk::PlaceWindow . center')
 
     def run(self):
+        self.root.pack_propagate()
         self.show_stat(False)
         # thr = Thread(target=self.show_stat, args=(False,))
         # thr.start()

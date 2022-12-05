@@ -1,12 +1,11 @@
 """
-    SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
-    This is an example of how to implement DataStore in Python + sqlite3/psycopg2/mysql/django.db -->
-    Executing custom SQL directly https://docs.djangoproject.com/en/3.2/topics/db/sql/
+    This file is a part of SQL DAL Maker project: https://sqldalmaker.sourceforge.net
+    It demonstrates how to implement an interface DataStore in Python + sqlite3|psycopg2|mysql|cx_oracle|django.db.
+    More about DataStore: https://sqldalmaker.sourceforge.net/data_store.html
     Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store.py
 
-    Copy-paste this code to your project and change it for your needs.
+    Successfully tested with both "no-django" and django.db:
 
-    Successfully tested in django projects:
     - 'django.db.backends.sqlite3' ---------------- built-in
     - 'django.db.backends.postgresql_psycopg2' ---- pip install psycopg2
     - 'mysql.connector.django' -------------------- pip install mysql-connector-python
@@ -16,17 +15,19 @@
        https://stackoverflow.com/questions/26573984/django-how-to-install-mysql-connector-python-with-pip3)
     - 'django.db.backends.oracle' ------------------pip install cx_oracle
 
+    Copy-paste it to your project and change it for your needs.
     Improvements are welcome: sqldalmaker@gmail.com
+
 """
 
-# uncomment one of the imports below to use without django.db
+# uncomment one of the imports below for "no-django"
 
 import sqlite3
 # import psycopg2
 # import mysql.connector
 # import cx_oracle
 
-# uncomment the imports and code below to use with django.db:
+# uncomment the imports and code below while using django.db:
 
 # import django.db
 # from django.apps import AppConfig
@@ -37,7 +38,7 @@ import sqlite3
 # class MyDjangoAppConfig(AppConfig):
 #     default_auto_field = 'django.db.models.BigAutoField'
 #     # default_auto_field = 'django.db.models.AutoField'
-#     name = 'dal'  # ----------- python package containing generated django models
+#     name = 'dal'  # python package containing generated django models
 
 
 # # there should be "settings.py" in the project root
@@ -62,43 +63,146 @@ class DataStore:
 
     def rollback(self): pass
 
-    # raw-SQL
+    # ORM-based raw-SQL helpers
 
-    def get_one_raw(self, cls, params=None): pass
+    def get_one_raw(self, cls, params=None):
+        """
+        :param cls: a model class containing static field SQL
+        :param params: a tuple of SQL params
+        :return: a model object
+        """
+        pass
 
-    def get_all_raw(self, cls, params=None) -> []: pass
+    def get_all_raw(self, cls, params=None) -> []:
+        """
+        :param cls: a model class containing static field SQL
+        :param params: a tuple of SQL params
+        :return: an array of model objects
+        """
+        pass
 
-    # ORM helpers
+    # ORM-based helpers
 
-    def filter(self, cls, params=None): pass
+    def filter(self, cls, params: dict):
+        """
+        :param cls: a model class
+        :param params: dict of named filter params
+        :return: a QuerySet
+        """
+        pass
 
-    def delete_by_filter(self, cls, params=None) -> int: pass
+    def delete_by_filter(self, cls, params: dict) -> int:
+        """
+        :param cls: a model class
+        :param params: dict of named filter params
+        :return: amount of rows affected
+        """
+        pass
 
-    # ORM-based CRUD
+    def update_by_filter(self, cls, data: dict, params: dict) -> int:
+        """
+        :param cls: a model class
+        :param data: dict of column-value to update
+        :param params: dict of filter params
+        :return: amount of rows affected
+        """
+        pass
 
-    def create_one(self, serializer): pass
+    # ORM-based CRUD methods
 
-    def read_all(self, cls) -> []: pass
+    def create_one(self, obj) -> None:
+        """
+        :param obj: a model object or serializer object
+        :return: None
+        """
+        pass
 
-    def read_one(self, cls, params=None): pass
+    def read_all(self, cls):
+        """
+        :param cls: a model class
+        :return: a QuerySet
+        """
+        pass
 
-    def update_one(self, serializer): pass
+    def read_one(self, cls, pk: dict):
+        """
+        :param cls: a model class
+        :param pk: primary key as a dict of column-value pairs
+        :return: a model object
+        """
+        pass
 
-    def delete_one(self, cls, params=None) -> int: pass
+    def update_one(self, cls, data: dict, pk: dict) -> int:
+        """
+        :param cls: model class
+        :param data: dict of column-value to update
+        :param pk: primary key as a dict of column-value pairs
+        :return: int, amount of rows affected
+        """
+        pass
 
-    # the methods called by generated dao classes
+    def delete_one(self, cls, pk: dict) -> int:
+        """
+        :param cls: model class
+        :param pk: primary key as a dict of column-value pairs
+        :return: int, amount of rows affected
+        """
+        pass
 
-    def insert_row(self, sql, params, ai_values): pass
+    # Raw-SQL methods
 
-    def exec_dml(self, sql, params): pass
+    def insert_row(self, sql, params, ai_values):
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters
+        :param ai_values: an array like [["o_id", 1], ...] to specify and obtain auto-incremented values
+        :return: None
+        :raise Exception if no rows inserted.
+        """
+        pass
 
-    def query_scalar(self, sql, params): pass
+    def exec_dml(self, sql, params):
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters
+        :return: int, amount of rows affected
+        """
+        pass
 
-    def query_all_scalars(self, sql, params) -> []: pass
+    def query_scalar(self, sql, params):
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters
+        :return single scalar value
+        :raise Exception if amount of fetched rows != 1
+        """
+        pass
 
-    def query_row(self, sql, params): pass
+    def query_all_scalars(self, sql, params) -> []:
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters
+        :return array of scalar values
+        """
+        pass
 
-    def query_all_rows(self, sql, params, callback) -> []: pass
+    def query_row(self, sql, params):
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters
+        :return single fetched row
+        :raise Exception if amount of rows != 1
+        """
+        pass
+
+    def query_all_rows(self, sql, params, callback):
+        """
+        :param sql: str
+        :param params: array, values of SQL parameters.
+        :param callback: Ð° function delivering fetched rows to caller
+        :return: None
+        """
+        pass
 
 
 def create_ds() -> DataStore:
@@ -116,8 +220,13 @@ class _DS(DataStore):
         self.conn = sqlite3.connect('my-github.sqlite3')
         self.engine_type = self.EngineType.sqlite3
 
+    # def __init__(self):
+    #     self.conn = None
+    #     self.engine_type = self.EngineType.sqlite3
+    #     self.open()
+    #
     # def open(self):
-    #     # uncomment to use without django.db:
+    #     # ===== uncomment to use without django.db:
     #
     #     # self.conn = sqlite3.connect('./task-tracker.sqlite')
     #     # self.engine_type = self.EngineType.sqlite3
@@ -130,7 +239,7 @@ class _DS(DataStore):
     #
     #     # print(self.conn.autocommit)
     #
-    #     # uncomment to use with django.db:
+    #     # ====== uncomment to use with django.db:
     #
     #     con = django.db.connections['default']
     #     engine = con.settings_dict["ENGINE"]
@@ -151,7 +260,7 @@ class _DS(DataStore):
             self.conn.close()
             self.conn = None
 
-    # raw-SQL
+    # ORM-based raw-SQL helpers
 
     def get_all_raw(self, cls, params=None) -> []:
         if not params:
@@ -168,55 +277,65 @@ class _DS(DataStore):
             raise Exception('More than 1 row exists')
         return rows[0]
 
-    # ORM helpers
+    # ORM-based helpers
 
-    def filter(self, cls, params=None):
+    def filter(self, cls, params: dict):
+        # Django Filter Model by Dictionary
+        # https://stackoverflow.com/questions/16018497/django-filter-model-by-dictionary
         return cls.objects.filter(**params)
 
-    def delete_by_filter(self, cls, params=None) -> int:
+    def delete_by_filter(self, cls, params: dict) -> int:
+        # Entry.objects.filter(blog=b).delete()
+        # https://docs.djangoproject.com/en/4.1/ref/models/querysets/
         queryset = self.filter(cls, params)
         res_tuple = queryset.delete()  # (1, {'dal.Group': 1})
         return res_tuple[0]
 
-    # CRUD
+    def update_by_filter(self, cls, data: dict, params: dict) -> int:
+        # call update(), rather than loading the model object into memory.
+        # Entry.objects.filter(id=10).update(comments_on=False)
+        # https://docs.djangoproject.com/en/4.1/ref/models/querysets/
+        queryset = self.filter(cls, params)
+        rows_affected = queryset.update(**data)
+        return rows_affected
 
-    def create_one(self, serializer):
-        serializer.save()
+    # ORM-based CRUD methods
 
-    def read_all(self, cls) -> []:
+    def create_one(self, obj):
+        obj.save()
+
+    def read_all(self, cls):
         return cls.objects.all()
 
-    def read_one(self, cls, params=None):
-        return cls.objects.get(**params)
+    def read_one(self, cls, pk: dict):
+        return cls.objects.get(**pk)
 
-    def update_one(self, serializer):
-        serializer.save()
+    def update_one(self, cls, data: dict, pk: dict) -> int:
+        return self.update_by_filter(cls, data, pk)  # no fetch!
 
-    def delete_one(self, cls, params=None) -> int:
-        # queryset = self.read_one(cls, params) # it returns an entity -> fetching
-        # queryset.delete()
-        rc = self.delete_by_filter(cls, params)  # no fetch!
+    def delete_one(self, cls, pk: dict) -> int:
+        rc = self.delete_by_filter(cls, pk)  # no fetch!
         return rc
 
     # uncomment to use without django.db:
 
     def begin(self):
         self.conn.execute('begin')  # sqlite3
-        self.conn.start_transaction() # mysql
-        self.conn.begin() # psycopg2
+        # self.conn.start_transaction() # mysql
+        # self.conn.begin() # psycopg2
 
     # uncomment to use without django.db:
     def commit(self):
         self.conn.execute('commit')  # sqlite3
-        self.conn.commit() # psycopg2, mysql
+        # self.conn.commit() # psycopg2, mysql
 
     # uncomment to use without django.db:
     def rollback(self):
         self.conn.execute("rollback")  # sqlite3
-        self.conn.rollback() # psycopg2, mysql
+        # self.conn.rollback() # psycopg2, mysql
 
-    # # uncomment to use with django.db:
-    #
+    # uncomment to use with django.db:
+
     # def begin(self):
     #     django.db.transaction.set_autocommit(False)
     #
@@ -227,16 +346,6 @@ class _DS(DataStore):
     #     django.db.transaction.rollback()
 
     def insert_row(self, sql, params, ai_values):
-        """
-        Returns:
-            Nothing.
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters.
-            ai_values (array, optional): Array like [["o_id", 1], ...] for auto-increment values.
-        Raises:
-            Exception: if no rows inserted.
-        """
         sql = self._format_sql(sql)
         if len(ai_values) > 0:
             if self.engine_type == self.EngineType.postgresql:
@@ -295,13 +404,6 @@ class _DS(DataStore):
         self._assign_out_params(params, result_args)
 
     def exec_dml(self, sql, params):
-        """
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters.
-        Returns:
-            Number of updated rows.
-        """
         sql = self._format_sql(sql)
         sp = self._get_sp_name(sql)
 
@@ -320,15 +422,6 @@ class _DS(DataStore):
         self._exec(do_exec)
 
     def query_scalar(self, sql, params):
-        """
-        Returns:
-            Single scalar value.
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters if needed.
-        Raises:
-            Exception: if amount of rows != 1.
-        """
         rows = self.query_all_scalars(sql, params)
         if len(rows) == 0:
             raise Exception('No rows')
@@ -340,13 +433,6 @@ class _DS(DataStore):
             return rows[0]  # 'select get_test_rating(?)' returns just scalar value, not array of arrays
 
     def query_all_scalars(self, sql, params):
-        """
-        Returns:
-            array of scalar values
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters if needed.
-        """
         sql = self._format_sql(sql)
         res = []
         sp = self._get_sp_name(sql)
@@ -370,15 +456,6 @@ class _DS(DataStore):
         return res
 
     def query_row(self, sql, params):
-        """
-        Returns:
-            Single row
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters if needed.
-        Raises:
-            Exception: if amount of rows != 1.
-        """
         rows = []
         self.query_all_rows(sql, params, lambda row: rows.append(row))
         if len(rows) == 0:
@@ -388,14 +465,6 @@ class _DS(DataStore):
         return rows[0]
 
     def query_all_rows(self, sql, params, callback):
-        """
-        Returns:
-            None
-        Arguments:
-            sql (string): SQL statement.
-            params (array, optional): Values of SQL parameters if needed.
-            callback
-        """
         sql = self._format_sql(sql)
         sp = self._get_sp_name(sql)
 
