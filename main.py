@@ -4,6 +4,8 @@ import datetime
 import os
 import sys
 # from threading import Thread
+import time
+from threading import Thread
 
 import requests
 import tkinter as tk
@@ -42,6 +44,9 @@ class MyApp:
         self.ds = create_ds()
         self.root = tk.Tk()
         self.root.resizable(width=False, height=False)
+
+        self.root.withdraw()  # hide it before ANY changes of content
+
         frame = tk.Frame(self.root)
         pad = 8
         frame.pack(padx=pad, pady=pad)
@@ -71,14 +76,15 @@ class MyApp:
         self.by_month = False
         self.raw_stat = False
         self.release_info_file_path = None
+
+        self.show_stat(False)  # it performs resizing of self.root
+
         # center it last:
-        self.root.eval('tk::PlaceWindow . center')
+        self.root.eval('tk::PlaceWindow . center')  # without "withdraw/deiconify", it makes ugly blinking
+
+        self.root.deiconify()  # show after center
 
     def run(self):
-        self.root.pack_propagate()
-        self.show_stat(False)
-        # thr = Thread(target=self.show_stat, args=(False,))
-        # thr.start()
         self.root.mainloop()
 
     def show_raw(self):
@@ -249,10 +255,7 @@ class MyApp:
         else:
             return self.get_day_by_day(dao)
 
-    def build_chart(self):
-        data, max_data_value, sum_for_period = self.get_chart_data()
-        if max_data_value == 0:
-            max_data_value = 1
+    def draw_chart(self, data, max_data_value):
         # https://stackoverflow.com/questions/35666573/use-tkinter-to-draw-a-specific-bar-chart
         y_stretch = (self.CHART_HEIGHT - 60) / max_data_value
         y_gap = 24
@@ -280,6 +283,18 @@ class MyApp:
             else:
                 text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
             self.center_align(text_2, x_rect_offset)
+
+            if x % 3 == 0:
+                time.sleep(0.001)
+
+    def build_chart(self):
+        data, max_data_value, sum_for_period = self.get_chart_data()
+        if max_data_value == 0:
+            max_data_value = 1
+
+        thr = Thread(target=self.draw_chart, args=(data, max_data_value,))
+        thr.start()
+
         return sum_for_period
 
     def center_align(self, text_id, x_rect_offset):
