@@ -3,9 +3,6 @@ import datetime
 
 import os
 import sys
-# from threading import Thread
-import time
-from threading import Thread
 
 import requests
 import tkinter as tk
@@ -284,17 +281,11 @@ class MyApp:
                 text_2 = self.canvas.create_text(x0, y1 + 20, anchor="nw", text=str(x_label))
             self.center_align(text_2, x_rect_offset)
 
-            if x % 3 == 0:
-                time.sleep(0.001)
-
     def build_chart(self):
         data, max_data_value, sum_for_period = self.get_chart_data()
         if max_data_value == 0:
             max_data_value = 1
-
-        thr = Thread(target=self.draw_chart, args=(data, max_data_value,))
-        thr.start()
-
+        self.draw_chart(data, max_data_value)
         return sum_for_period
 
     def center_align(self, text_id, x_rect_offset):
