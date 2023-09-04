@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/sdm_demo_python_tkinter_github_stat.iml" filepath="$PROJECT_DIR$/.idea/sdm_demo_python_tkinter_github_stat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/demo_tkinter_github_stat.iml" filepath="$PROJECT_DIR$/.idea/demo_tkinter_github_stat.iml" />
     </modules>
   </component>
 </project>

@@ -31,6 +31,7 @@ class ReleasesDao:
         """
         sql = """select * from releases 
                 where r_name = ?"""
+
         _res = []
 
         def _map_cb(row):
@@ -40,4 +41,5 @@ class ReleasesDao:
             _res.append(_obj)
 
         self.ds.query_all_rows(sql, [r_name], _map_cb)
+
         return _res
