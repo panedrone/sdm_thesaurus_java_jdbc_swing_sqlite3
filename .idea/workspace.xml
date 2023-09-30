@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="qq">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dao.ThesaurusDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dao.ThesaurusDao.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dao.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dao.xsd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dto.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dto.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dto.xsd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/java.dal" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/java.dal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/settings.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/settings.xsd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroupWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroups.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroupWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroups.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getTotalWordsCount.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getTotalWordsCount.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getWordsByKey.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getWordsByKey.sql" afterDir="false" />
-    </list>
+    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="Initial commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,17 +50,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "D:/work/runtime-EclipseApplication/sdm_demo_java_jdbc_swing_thesaurus_sqlite3",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.31569174"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/work/runtime-EclipseApplication/sdm_demo_java_jdbc_swing_thesaurus_sqlite3&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.31569174&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\work\runtime-EclipseApplication\sdm_demo_java_jdbc_swing_thesaurus_sqlite3" />
@@ -445,7 +425,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596305461403</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Initial commit">
+      <created>1696075769994</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1696075769994</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -477,7 +464,8 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="qq" />
-    <option name="LAST_COMMIT_MESSAGE" value="qq" />
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
   <component name="XPathView.XPathProjectComponent">
     <history>
