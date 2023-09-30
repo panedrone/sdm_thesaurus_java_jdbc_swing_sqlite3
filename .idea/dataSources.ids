@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source source="LOCAL" name="SQLite -" uuid="8b8f0295-7bc0-4618-8dea-5b37d9e645ff">
+    <database-info product="SQLite" version="3.7.6.3" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
+    <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
+    <schema name="" catalog=""/>
+    <table name="RELATED_GROUPS" schema="" catalog="" type="TABLE">
+      <column name="RG_ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="W_ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="RG_PART_OF_SPEECH" sqlType="VARCHAR(250)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="RG_ORDER" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="RG_ID"/>
+      <exported-key name="#FAKE_RELATED_GROUP_WORDS_1" table="RELATED_GROUP_WORDS" schema="" catalog="" columns="RG_ID"/>
+    </table>
+    <table name="RELATED_GROUP_WORDS" schema="" catalog="" type="TABLE">
+      <column name="RGW_ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="RG_ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="RGW_WORD" sqlType="VARCHAR(250)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="RGW_NOTE" sqlType="VARCHAR(250)" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="RGW_ORDER" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="RGW_ID"/>
+      <foreign-key name="#FAKE_RELATED_GROUP_WORDS_1" columns="RG_ID" ref-table="RELATED_GROUPS" ref-schema="" ref-catalog="" ref-columns="RG_ID" update-rule="3" delete-rule="1" deferrability="1"/>
+    </table>
+    <table name="WORDS" schema="" catalog="" type="TABLE">
+      <column name="W_ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="W_WORD" sqlType="VARCHAR(250)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="W_ID"/>
+    </table>
+    <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
+      <column name="name" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="seq" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+    </table>
+  </data-source>
+</component>

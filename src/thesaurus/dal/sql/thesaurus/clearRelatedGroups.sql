@@ -1,0 +1,1 @@
+delete from RELATED_GROUPS
