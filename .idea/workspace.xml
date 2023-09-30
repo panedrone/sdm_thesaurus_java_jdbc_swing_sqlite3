@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="qq" />
+    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="qq">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dao.ThesaurusDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dao.ThesaurusDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dao.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dao.xsd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dto.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/dto.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/dto.xsd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/java.dal" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/java.dal" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sqldalmaker/settings.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/settings.xsd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroupWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroups.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/clearWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/clearWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroupWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroups.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getRelatedWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getRelatedWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getTotalWordsCount.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getTotalWordsCount.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/dal/sql/thesaurus/getWordsByKey.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/sdm/sql/getWordsByKey.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,6 +74,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "last_opened_file_path": "D:/work/runtime-EclipseApplication/sdm_demo_java_jdbc_swing_thesaurus_sqlite3",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
@@ -63,6 +84,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\work\runtime-EclipseApplication\sdm_demo_java_jdbc_swing_thesaurus_sqlite3" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\work\runtime-EclipseApplication\sdm_demo_java_jdbc_swing_thesaurus_sqlite3\src\sqldalmaker\sql" />
     </key>
   </component>
   <component name="RunManager">

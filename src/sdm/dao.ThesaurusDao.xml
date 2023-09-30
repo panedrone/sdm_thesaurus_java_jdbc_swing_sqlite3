@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dao-class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="dao.xsd">
+
+    <query method="getTotalWordsCount" ref="getTotalWordsCount.sql" return-type="Integer"/>
+
+    <query-dto-list method="getWordsByKey(key)" ref="getWordsByKey.sql" dto="Word"/>
+
+    <query-dto-list method="getRelatedWords(Integer w_id)" dto="RelatedWord"/>
+
+</dao-class>

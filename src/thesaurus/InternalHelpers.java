@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 public class InternalHelpers {
 
 	static String getConfigFileName(String relPath) {
-		return "sqldalmaker/" + relPath;
+		return "sdm/" + relPath;
 	}
 
 	public static void showError(Component c, Throwable e) {

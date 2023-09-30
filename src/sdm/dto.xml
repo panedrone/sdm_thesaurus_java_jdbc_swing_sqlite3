@@ -4,7 +4,7 @@
 
     <dto-class name="Word" ref="WORDS"/>
 
-    <dto-class name="RelatedWord" ref="thesaurus/getRelatedWords.sql">
+    <dto-class name="RelatedWord" ref="getRelatedWords.sql">
         <!-- strong-typing is not needed here -->
     </dto-class>
 

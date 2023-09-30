@@ -12,7 +12,7 @@ dto.xml
 
     <dto-class name="Word" ref="WORDS"/>
 
-    <dto-class name="RelatedWord" ref="thesaurus/getRelatedWords.sql"/>
+    <dto-class name="RelatedWord" ref="getRelatedWords.sql"/>
 
 </dto-classes>
 ```
@@ -23,6 +23,11 @@ dao.ThesaurusDao.xml
 
 <dao-class>
 
+    <query method="getTotalWordsCount" ref="getTotalWordsCount.sql" return-type="Integer"/>
+
+    <query-dto-list method="getWordsByKey(key)" ref="getWordsByKey.sql" dto="Word"/>
+
+    <query-dto-list method="getRelatedWords(Integer w_id)" dto="RelatedWord"/>
 
 </dao-class>
 ```
@@ -34,10 +39,10 @@ package thesaurus;
 
 import java.util.List;
 
-import com.sqldalmaker.DataStoreManager;
-import com.sqldalmaker.thesaurus.dao.ThesaurusDao;
-import com.sqldalmaker.thesaurus.dto.RelatedWord;
-import com.sqldalmaker.thesaurus.dto.Word;
+import com.sdm.DataStoreManager;
+import com.sdm.thesaurus.dao.ThesaurusDao;
+import com.sdm.thesaurus.dto.RelatedWord;
+import com.sdm.thesaurus.dto.Word;
 
 public class DataController {
 
