@@ -4,43 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="Initial commit">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdm/dao.xsd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdm/sdm.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdm/sdm.xsd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/ThesaurusApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdm_demo_java_jdbc_swing_thesaurus_sqlite3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sdm_demo_java_jdbc_swing_thesaurus_sqlite3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/README_th_en_US_v2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/README_th_en_US_v2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/DataStoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sqldalmaker/DataStoreManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dao/ThesaurusDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dao/ThesaurusDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dto/RelatedWord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dto/RelatedWord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dto/Word.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dto/Word.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/dao.ThesaurusDao.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/dao.xsd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/dto.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/dto.xsd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/java.dal" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/java.dal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/settings.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/settings.xsd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearRelatedGroupWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearRelatedGroups.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedGroupWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedGroups.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedWords.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getTotalWordsCount.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getTotalWordsCount.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getWordsByKey.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getWordsByKey.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/DataController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/DataController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/Helpers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/MainPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/MainPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/ThesaurusApp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/thesaurus/db-diagram.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/db-diagram.png" afterDir="false" />
-    </list>
+    <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="1.292.1210" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -403,6 +367,13 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-11.0.21-corretto-11.0.21-8336523bb0d9-d3b62f98" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
@@ -482,7 +453,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702399287127</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="1.292.1210">
+      <option name="closed" value="true" />
+      <created>1702400521101</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1702400521101</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -518,7 +497,8 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="qq" />
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="1.292.1210" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.292.1210" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>
