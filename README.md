@@ -4,45 +4,40 @@ Quick Demo of how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmake
 
 ![sdm_swing.png](sdm_swing.png)
 
-dto.xml
+sdm.xml
 
 ```xml
 
-<dto-classes>
+<sdm>
 
     <dto-class name="Word" ref="WORDS"/>
 
     <dto-class name="RelatedWord" ref="getRelatedWords.sql"/>
 
-</dto-classes>
+    <dao-class name="ThesaurusDao">
+
+        <query method="getTotalWordsCount" ref="getTotalWordsCount.sql" return-type="Integer"/>
+
+        <query-dto-list method="getWordsByKey(key)" ref="getWordsByKey.sql" dto="Word"/>
+
+        <query-dto-list method="getRelatedWords(Integer w_id)" dto="RelatedWord"/>
+
+    </dao-class>
+
+</sdm>
 ```
 
-dao.ThesaurusDao.xml
-
-```xml
-
-<dao-class>
-
-    <query method="getTotalWordsCount" ref="getTotalWordsCount.sql" return-type="Integer"/>
-
-    <query-dto-list method="getWordsByKey(key)" ref="getWordsByKey.sql" dto="Word"/>
-
-    <query-dto-list method="getRelatedWords(Integer w_id)" dto="RelatedWord"/>
-
-</dao-class>
-```
-
-Generated DAO class:
+Generated code in action:
 
 ```java
-package thesaurus;
+package com.sdm.thesaurus;
 
 import java.util.List;
 
-import com.sdm.DataStoreManager;
-import com.sdm.thesaurus.dao.ThesaurusDao;
-import com.sdm.thesaurus.dto.RelatedWord;
-import com.sdm.thesaurus.dto.Word;
+import com.sqldalmaker.DataStoreManager;
+import com.sdm.com.sdm.thesaurus.dao.ThesaurusDao;
+import com.sdm.com.sdm.thesaurus.dto.RelatedWord;
+import com.sdm.com.sdm.thesaurus.dto.Word;
 
 public class DataController {
 

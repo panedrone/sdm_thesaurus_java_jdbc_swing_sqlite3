@@ -1,4 +1,4 @@
-WordNet-based thesaurus that covers both British and American English.
+WordNet-based com.sdm.thesaurus that covers both British and American English.
 For a script to convert the WordNet data to OpenOffice.org format, see
 http://www.danielnaber.de/wn2ooo/
 

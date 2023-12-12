@@ -1,11 +1,11 @@
-package thesaurus;
+package com.sdm.thesaurus;
 
 import java.util.List;
 
 import com.sqldalmaker.DataStoreManager;
-import com.sqldalmaker.thesaurus.dao.ThesaurusDao;
-import com.sqldalmaker.thesaurus.dto.RelatedWord;
-import com.sqldalmaker.thesaurus.dto.Word;
+import com.sdm.thesaurus.dao.ThesaurusDao;
+import com.sdm.thesaurus.dto.RelatedWord;
+import com.sdm.thesaurus.dto.Word;
 
 public class DataController {
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal">
+  <component name="dataSourceStorageLocal" created-in="GO-233.11799.228">
     <data-source name="SQLite -" uuid="8b8f0295-7bc0-4618-8dea-5b37d9e645ff">
-      <secret-storage>memory</secret-storage>
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
+      <schema-mapping />
     </data-source>
   </component>
 </project>

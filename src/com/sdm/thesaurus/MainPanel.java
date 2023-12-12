@@ -1,4 +1,4 @@
-package thesaurus;
+package com.sdm.thesaurus;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,8 +28,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-import com.sqldalmaker.thesaurus.dto.RelatedWord;
-import com.sqldalmaker.thesaurus.dto.Word;
+import com.sdm.thesaurus.dto.RelatedWord;
+import com.sdm.thesaurus.dto.Word;
 
 public class MainPanel extends JPanel {
 
@@ -216,7 +216,7 @@ public class MainPanel extends JPanel {
         	
         } catch (Throwable tr) {
         	
-        	InternalHelpers.showError(this, tr);
+        	Helpers.showError(this, tr);
         	
         } finally {
 
@@ -281,7 +281,7 @@ public class MainPanel extends JPanel {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					InternalHelpers.showError(MainPanel.this, e);
+					Helpers.showError(MainPanel.this, e);
 				}
 			}
 		};

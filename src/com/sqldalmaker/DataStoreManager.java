@@ -22,6 +22,10 @@ import com.sdm.thesaurus.dao.ThesaurusDao;
  */
 public class DataStoreManager {
 
+	public ThesaurusDao createThesaurusDao() {
+		return new ThesaurusDao(ds);
+	}
+
 	public static class OutParam<T> {
 
 		private final int sqlType;
@@ -193,8 +197,8 @@ public class DataStoreManager {
 		private boolean is_date_value(Class<?> inValueType) {
 			return (java.util.Date.class.isAssignableFrom(inValueType)
 					&& !(java.sql.Date.class.isAssignableFrom(inValueType)
-							|| java.sql.Time.class.isAssignableFrom(inValueType)
-							|| java.sql.Timestamp.class.isAssignableFrom(inValueType)));
+					|| java.sql.Time.class.isAssignableFrom(inValueType)
+					|| java.sql.Timestamp.class.isAssignableFrom(inValueType)));
 		}
 
 		protected void prepare_params(Object... params) {
@@ -242,9 +246,9 @@ public class DataStoreManager {
 						i++;
 					}
 				} finally {
-					// if (rs_keys != null) {
+					//if (rs_keys != null) {
 					rs_keys.close();
-					// }
+					//}
 				}
 			}
 		}
@@ -342,8 +346,7 @@ public class DataStoreManager {
 						return;
 					}
 					Object value = rs.getObject(1);
-					// PostgreSQL: Object value is ResultSet for SQL statements like 'select * from
-					// my_func(?, ?)'
+					// PostgreSQL: Object value is ResultSet for SQL statements like 'select * from my_func(?, ?)'
 					if (value instanceof ResultSet) {
 						while (true) {
 							final ResultSet rs_value = (ResultSet) value;
@@ -355,7 +358,7 @@ public class DataStoreManager {
 							} finally {
 								// if (rs_value != null) {
 								rs_value.close();
-								// }
+								//}
 							}
 							if (rs.next()) {
 								value = rs.getObject(1);
@@ -385,7 +388,7 @@ public class DataStoreManager {
 			final List<RowData> rows = new ArrayList<RowData>();
 			queryAllRows(sql, new RowHandler() {
 				@Override
-				public void handleRow(RowData rd) /* throws Exception */ {
+				public void handleRow(RowData rd) /*throws Exception*/ {
 					rows.add(rd);
 				}
 			}, params);
@@ -407,8 +410,7 @@ public class DataStoreManager {
 						return;
 					}
 					Object value = rs.getObject(1);
-					// PostgreSQL: Object value is ResultSet for SQL statements like 'select * from
-					// my_func(?, ?)'
+					// PostgreSQL: Object value is ResultSet for SQL statements like 'select * from my_func(?, ?)'
 					if (value instanceof ResultSet) {
 						while (true) {
 							final ResultSet rs_value = (ResultSet) value;
@@ -482,7 +484,8 @@ public class DataStoreManager {
 			}
 		}
 
-		private <T> void _query(Connection conn, String sql, RsHandler rsh, Object... params) throws SQLException {
+		private <T> void _query(Connection conn, String sql, RsHandler rsh, Object... params)
+				throws SQLException {
 			if (conn == null) {
 				throw new SQLException("Null connection");
 			}
@@ -519,7 +522,8 @@ public class DataStoreManager {
 			}
 		}
 
-		private void _fill_statement(PreparedStatement stmt, Object... params) throws SQLException {
+		private void _fill_statement(PreparedStatement stmt, Object... params)
+				throws SQLException {
 			// nothing to do here
 			if (params == null) {
 				return;
@@ -551,16 +555,15 @@ public class DataStoreManager {
 			call_params.add(cp);
 		}
 
-		private boolean _prepare_call_params(boolean allow_cursor_params, Object[] params, List<Object> call_params)
-				throws SQLException {
+		private boolean _prepare_call_params(boolean allow_cursor_params, Object[] params, List<Object> call_params) throws SQLException {
 			boolean query_out_cursors = false;
 			for (int i = 0; i < params.length; i++) {
 				if (params[i] instanceof RowHandler) {
 					if (allow_cursor_params) {
 						// uncomment/comment lines below if you are not on Oracle:
 						throw new SQLException("RowHandler params are allowed only for Oracle SYS_REFCURSOR-s");
-						// call_params.add(new OutParam<Object>(OracleTypes.CURSOR, Object.class));
-						// query_out_cursors = true;
+						//call_params.add(new OutParam<Object>(OracleTypes.CURSOR, Object.class));
+						//query_out_cursors = true;
 					} else {
 						throw new SQLException(RowHandler.class.getName() + " are not allowed here");
 					}
@@ -657,7 +660,7 @@ public class DataStoreManager {
 			}
 
 			@Override
-			public Long getLong(String columnLabel) throws Exception {
+			public Long getLong (String columnLabel) throws Exception {
 				long res = rs.getLong(columnLabel);
 				if (rs.wasNull()) {
 					return null;
@@ -693,7 +696,7 @@ public class DataStoreManager {
 			}
 
 			@Override
-			public String getString(String columnLabel) throws Exception {
+			public String getString (String columnLabel) throws Exception {
 				String res = rs.getString(columnLabel);
 				if (rs.wasNull()) {
 					return null;
@@ -740,8 +743,7 @@ public class DataStoreManager {
 					// https://oracle-base.com/articles/misc/using-ref-cursors-to-return-recordsets
 					boolean is_rs = stmt.execute();
 					if (is_rs) {
-						throw new SQLException(
-								"Invalid usage of Out Ref-Cursors. First result of stmt.execute() is a ResultSet object.");
+						throw new SQLException("Invalid usage of Out Ref-Cursors. First result of stmt.execute() is a ResultSet object.");
 					}
 					for (int i = 0; i < params.length; i++) {
 						if (params[i] instanceof RowHandler) {
@@ -866,9 +868,5 @@ public class DataStoreManager {
 				_assign_out_param(op, out_value);
 			}
 		}
-	}
-
-	public ThesaurusDao createThesaurusDao() {
-		return new ThesaurusDao(ds);
 	}
 }

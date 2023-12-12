@@ -1,8 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="6441f67d-6c80-4c2e-9831-42619cded2fd" name="Default" comment="Initial commit">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdm/dao.xsd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdm/sdm.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdm/sdm.xsd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/ThesaurusApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdm_demo_java_jdbc_swing_thesaurus_sqlite3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sdm_demo_java_jdbc_swing_thesaurus_sqlite3.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/README_th_en_US_v2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/README_th_en_US_v2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/DataStoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sqldalmaker/DataStoreManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dao/ThesaurusDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dao/ThesaurusDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dto/RelatedWord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dto/RelatedWord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sqldalmaker/thesaurus/dto/Word.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/dto/Word.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/dao.ThesaurusDao.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/dao.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/dto.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/dto.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/java.dal" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/java.dal" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/settings.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/settings.xsd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearRelatedGroupWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearRelatedGroups.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/clearWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/clearWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroupWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedGroupWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedGroups.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedGroups.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getRelatedWords.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getRelatedWords.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getTotalWordsCount.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getTotalWordsCount.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sdm/sql/getWordsByKey.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sdm/sql/getWordsByKey.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/DataController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/DataController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/InternalHelpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/Helpers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/MainPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/MainPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/ThesaurusApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/thesaurus/db-diagram.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sdm/thesaurus/db-diagram.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,8 +66,12 @@
       <setting name="OPEN_NEW_TAB" value="true" />
     </FindUsagesManager>
   </component>
+  <component name="GOROOT" url="file://C:/go1.21.3" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" />
   <component name="JsGulpfileManager">
@@ -43,6 +84,9 @@
     <servers />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="1e76pEsMXMlESCPKGJdX55scCUk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectReloadState">
@@ -54,13 +98,24 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.ThesaurusApp.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/work/runtime-EclipseApplication/sdm_demo_java_jdbc_swing_thesaurus_sqlite3&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.31569174&quot;
+    &quot;project.structure.side.proportion&quot;: &quot;0.31569174&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -140,6 +195,8 @@
       <method />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -150,11 +207,14 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="TestNGTestDiscovery" factoryName="TestNG Test Discovery" changeList="All">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -185,16 +245,16 @@
       <method />
     </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
-      <method />
+      <method v="2" />
     </configuration>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -220,15 +280,15 @@
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
@@ -236,93 +296,66 @@
       <option name="TEST_TYPE" value="TEST_SCRIPT" />
       <option name="PATTERN" value="" />
       <option name="USE_PATTERN" value="false" />
-      <method />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="tests" factoryName="Nosetests">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
+      <module name="example.swing.thesaurus.sqlite" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="example.swing.thesaurus.sqlite" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="" />
-      <option name="keywords" value="" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="false" />
-      <method />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
     </configuration>
     <configuration name="ThesaurusApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="thesaurus.ThesaurusApp" />
+      <option name="MAIN_CLASS_NAME" value="com.sdm.thesaurus.ThesaurusApp" />
       <module name="sdm_demo_java_jdbc_swing_thesaurus_sqlite3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="thesaurus.*" />
+          <option name="PATTERN" value="com.sdm.thesaurus.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -441,11 +474,22 @@
       <option name="project" value="LOCAL" />
       <updated>1696077646306</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1702399287127</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1702399287127</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="14920000" />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.py" />
@@ -476,6 +520,10 @@
     <MESSAGE value="Initial commit" />
     <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
+  </component>
   <component name="XPathView.XPathProjectComponent">
     <history>
       <element expression="/dto-classes/dto-class/">
@@ -496,6 +544,11 @@
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/sdm_demo_java_jdbc_swing_thesaurus_sqlite3$ThesaurusApp.ic" NAME="ThesaurusApp Coverage Results" MODIFIED="1702397549106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.sdm.thesaurus.*</FILTER>
+    </SUITE>
   </component>
   <component name="masterDetails">
     <states>

@@ -1,4 +1,4 @@
-package thesaurus;
+package com.sdm.thesaurus;
 
 import java.awt.Component;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import javax.swing.JOptionPane;
 
-public class InternalHelpers {
+public class Helpers {
 
 	static String getConfigFileName(String relPath) {
 		return "sdm/" + relPath;
@@ -49,7 +49,7 @@ public class InternalHelpers {
 
 		// swing app wants 'resources/' but plug-in wans '/resources/' WHY?
 
-		ClassLoader cl = InternalHelpers.class.getClassLoader();
+		ClassLoader cl = Helpers.class.getClassLoader();
 
 		InputStream is = cl.getResourceAsStream(resName);
 

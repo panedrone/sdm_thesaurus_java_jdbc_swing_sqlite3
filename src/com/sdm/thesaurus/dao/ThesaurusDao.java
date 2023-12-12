@@ -1,9 +1,9 @@
-package com.sqldalmaker.thesaurus.dao;
+package com.sdm.thesaurus.dao;
 
 import com.sqldalmaker.DataStore;
 
-import com.sqldalmaker.thesaurus.dto.RelatedWord;
-import com.sqldalmaker.thesaurus.dto.Word;
+import com.sdm.thesaurus.dto.RelatedWord;
+import com.sdm.thesaurus.dto.Word;
 import java.util.ArrayList;
 import java.util.List;
 
