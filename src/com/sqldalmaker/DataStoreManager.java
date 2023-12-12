@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 
-import com.sqldalmaker.thesaurus.dao.ThesaurusDao;
+import com.sdm.thesaurus.dao.ThesaurusDao;
 
 /*
-    SQL DAL Maker Web-Site: http://sqldalmaker.sourceforge.net
+    This class is a part of SQL DAL Maker project (http://sqldalmaker.sourceforge.net).
+    It represents an example of how to implement DataStore in Java/JDBC.
+    More about DataStore: https://sqldalmaker.sourceforge.net/preconfig.html#ds
+    Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/DataStoreManagerJDBC.java_
 
-    This is an example of how to implement DataStore in Java + JDBC.
     Copy-paste this code to your project and change it for your needs.
-
     Improvements are welcome: sqldalmaker@gmail.com
+
  */
 public class DataStoreManager {
 
@@ -158,7 +160,7 @@ public class DataStoreManager {
 		// DriverManager.getConnection("jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=AdventureWorks2014",
 		// "sa", "root");
 		// conn = DriverManager.getConnection("jdbc:h2:todo_list", "", "");
-		// conn = DriverManager.getConnection("jdbc:sqlite:thesaurus.sqlite", "", "");
+		// conn = DriverManager.getConnection("jdbc:sqlite:com.sdm.thesaurus.sqlite", "", "");
 		DatabaseMetaData dmd = conn.getMetaData();
 		String url = dmd.getURL();
 		is_oracle = url.contains("oracle");
