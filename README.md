@@ -1,6 +1,6 @@
 # sdm_thesaurus_java_swing_jdbc_sqlite3
 
-A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + JDBC.
+A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Java/JDBC.
 
 ![sdm_swing.png](sdm_swing.png)
 
