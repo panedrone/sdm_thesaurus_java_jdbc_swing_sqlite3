@@ -41,22 +41,22 @@ import com.sdm.com.sdm.thesaurus.dto.Word;
 
 public class DataController {
 
-    static DataStoreManager dm = new DataStoreManager();
-    static ThesaurusDao dao = dm.createThesaurusDao();
+    private static DataStoreManager dm = new DataStoreManager();
+    private static ThesaurusDao dao = dm.createThesaurusDao();
 
-    static void db_open() throws Exception {
+    public static void db_open() throws Exception {
         dm.open();
     }
 
-    static void db_close() throws Exception {
+    public static void db_close() throws Exception {
         dm.close();
     }
 
-    static List<RelatedWord> getRelatedWords(Word word) throws Exception {
+    public static List<RelatedWord> getRelatedWords(Word word) throws Exception {
         return dao.getRelatedWords(word.getWId());
     }
 
-    static Integer getTotalWordsCount() throws Exception {
+    public static Integer getTotalWordsCount() throws Exception {
         return dao.getTotalWordsCount();
     }
 
