@@ -1,4 +1,4 @@
-# sdm_thesaurus_java_jdbc_swing_sqlite3
+# sdm_thesaurus_java_swing_jdbc_sqlite3
 
 A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Java/JDBC/Swing. RDBMS is SQLite3.
 
